@@ -1,0 +1,4178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapido Case Study - Layout Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-canvas: #F9FAFB;
+            --bg-sidebar: #121418;
+            --card-bg: #FFFFFF;
+            --rapido-yellow: #F9C935;
+            --trust-green: #10B981;
+            --danger-red: #EF4444;
+            --text-primary: #111827;
+            --text-secondary: #4B5563;
+            --sidebar-text: #FFFFFF;
+            --sidebar-inactive: #9CA3AF;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* 16:9 Slide Container */
+        .slide-container {
+            width: 1280px;
+            /* Scaled down 16:9 */
+            height: 720px;
+            background-color: var(--bg-canvas);
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            background-image: radial-gradient(#d1d5db 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        /* --- PERSISTENT TOP BAR --- */
+        /* --- BOTTOM BAR V6 --- */
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: #F9C935;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .bottom-bar .v4-hud {
+            display: flex;
+            width: 100%;
+            align-items: center;
+        }
+
+        .bottom-bar .distance-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4B5563;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bottom-bar .separator {
+            width: 2px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 0 15px;
+            flex-shrink: 0;
+        }
+
+        .bottom-bar .bar-text {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1A1A1A;
+            width: 280px; font-size: 14px;
+            line-height: 1.2;
+            margin-left: 0;
+            margin-right: 20px;
+            z-index: 5;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .bottom-bar .timeline-track {
+            flex: 1;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.1);
+            position: relative;
+            margin: 0 20px;
+        }
+
+        .bottom-bar .timeline-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: #111827;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .bottom-bar .node {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #111827;
+            top: -1px;
+        }
+
+        .bottom-bar .bike-icon {
+            position: absolute;
+            top: -30px;
+            left: -40px;
+            transition: left 0.4s ease;
+            width: 80px;
+            height: auto;
+            z-index: 10;
+        }
+
+        .bottom-bar .destination {
+            font-size: 20px;
+            margin-left: 10px;
+        }
+
+        /* --- PERSISTENT LEFT SIDEBAR --- */
+        .sidebar {
+            width: 300px;
+            height: calc(100% - 70px);
+            margin-top: 0;
+            background-color: var(--bg-sidebar);
+            display: flex;
+            flex-direction: column;
+            padding: 40px 30px;
+            box-sizing: border-box;
+            z-index: 5;
+            position: relative;
+        }
+
+        .sidebar-author {
+            margin-top: auto;
+            color: var(--sidebar-inactive);
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0.7;
+            padding-left: 20px;
+        }
+
+        .chevron {
+            position: absolute;
+            left: 10px;
+            font-weight: bold;
+            color: var(--rapido-yellow);
+            transition: top 0.4s ease;
+            font-size: 14px;
+            z-index: 5;
+        }
+
+        .milestone {
+            color: var(--sidebar-inactive);
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s;
+            padding-left: 20px;
+            cursor: default;
+        }
+
+        .milestone.active {
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+
+        .milestone .num {
+            font-size: 13px;
+            font-weight: 700;
+            opacity: 0.5;
+            width: 28px;
+            display: inline-block;
+        }
+
+        .milestone.active .num {
+            opacity: 1;
+            color: var(--rapido-yellow);
+        }
+
+        /* --- MAIN CANVAS CONTENT --- */
+        .main-content {
+            flex: 1;
+            margin-top: 0;
+            margin-bottom: 70px;
+            padding: 60px;
+            display: flex;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .slide-view {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide-view.active {
+            display: flex;
+        }
+
+        /* Default Placeholder Styles */
+        .view-default {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .slide-number-badge {
+            background: rgba(17, 24, 39, 0.05);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 99px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .slide-placeholder-title {
+            color: var(--text-primary);
+            font-size: 48px;
+            font-weight: 800;
+            margin: 0 0 16px 0;
+            letter-spacing: -1px;
+            text-align: center;
+        }
+
+        .slide-placeholder-sub {
+            color: var(--text-secondary);
+            font-size: 24px;
+            text-align: center;
+            max-width: 800px;
+        }
+
+        /* --- SLIDE 1 (HERO COVER OPTION 1) SPECIFIC STYLES --- */
+        .slide-1-layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 30px;
+            width: 100%;
+            height: 100%;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .slide-1-left-hero {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 540px;
+        }
+
+        .slide-1-top-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #FFFBEB;
+            border: 1.5px solid #FCD34D;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #92400E;
+            width: fit-content;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .slide-1-h1 {
+            font-size: 38px;
+            font-weight: 900;
+            color: #111827;
+            line-height: 1.12;
+            letter-spacing: -1.2px;
+            margin: 0;
+        }
+
+        .slide-1-h1 span {
+            color: #D97706;
+        }
+
+        .slide-1-sub {
+            font-size: 16px;
+            font-weight: 500;
+            color: #4B5563;
+            line-height: 1.45;
+            margin: 0;
+        }
+
+        .slide-1-hook-banner {
+            background: #FFFFFF;
+            border: 1.5px solid #E5E7EB;
+            border-left: 5px solid var(--trust-green);
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+            font-size: 13px;
+            font-weight: 600;
+            color: #1F2937;
+            line-height: 1.4;
+        }
+
+        /* Slide 1 Phone Mockup */
+        .phone-mockup-wrap {
+            position: relative;
+            width: 250px;
+            height: 490px;
+            border-radius: 36px;
+            border: 8px solid #111827;
+            background: #000000;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .phone-screen-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Friction Dialogue Cards */
+        .v1-bubble {
+            position: absolute;
+            background: #FFFFFF;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 8px 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .v1-bubble.b-cash {
+            top: 230px;
+            left: -40px;
+            border-left: 4px solid #F59E0B;
+            background: #FFFDF7;
+        }
+
+        .v1-bubble.b-driver {
+            bottom: 120px;
+            right: -30px;
+            border-left: 4px solid #EF4444;
+            background: #FFFBFB;
+        }
+
+        .v1-bubble.b-plate {
+            bottom: 50px;
+            left: -35px;
+            border-left: 4px solid #DC2626;
+            background: #FFFBFB;
+        }
+
+        /* --- SLIDE 2 (BUSINESS GOAL SPLIT EXECUTIVE) SPECIFIC STYLES --- */
+        .slide-2-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0 10px;
+            margin-top: -25px;
+            box-sizing: border-box;
+            justify-content: space-between;
+        }
+
+        .slide-2-top {
+            flex: 0 0 auto;
+            margin-bottom: 6px;
+            text-align: left;
+        }
+
+        .slide-2-h2 {
+            font-size: 33px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.15;
+            margin: 0 0 4px 0;
+            letter-spacing: -1px;
+        }
+
+        .slide-2-sub {
+            font-size: 14.5px;
+            font-weight: 500;
+            color: #4B5563;
+            margin: 0;
+            max-width: 900px;
+            line-height: 1.35;
+        }
+
+        .split-container {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 18px;
+            flex: 1 1 auto;
+            margin-top: 6px;
+            align-items: stretch;
+        }
+
+        /* Left Strategic Mandate Card */
+        .mandate-card {
+            background: #111827;
+            color: #FFFFFF;
+            border-radius: 16px;
+            padding: 22px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            box-sizing: border-box;
+            border: 1px solid #1F2937;
+        }
+
+        .mandate-badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mandate-tag {
+            background: var(--rapido-yellow);
+            color: #111827;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mandate-sub-label {
+            font-size: 10.5px;
+            color: #9CA3AF;
+            font-weight: 600;
+        }
+
+        .mandate-quote {
+            font-size: 16.5px;
+            font-weight: 700;
+            line-height: 1.4;
+            color: #F9FAFB;
+            margin: 12px 0;
+        }
+
+        .mandate-quote span {
+            color: var(--rapido-yellow);
+        }
+
+        .mandate-context-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 11.5px;
+            color: #D1D5DB;
+            line-height: 1.4;
+        }
+
+        .mandate-context-box strong {
+            color: #FFFFFF;
+        }
+
+        .mandate-footer {
+            font-size: 11px;
+            color: #9CA3AF;
+            border-top: 1px solid #374151;
+            padding-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Right 3 Stacked Pillars */
+        .pillars-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .pillar-row {
+            background: #FFFFFF;
+            border-radius: 14px;
+            border: 1.5px solid #E5E7EB;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            flex: 1;
+            box-sizing: border-box;
+        }
+
+        .pillar-row.highlight-lever {
+            border: 2px solid var(--rapido-yellow);
+            border-left: 6px solid var(--rapido-yellow);
+            background: #FFFEFA;
+            box-shadow: 0 6px 18px rgba(249, 201, 53, 0.15);
+        }
+
+        .p-icon-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex: 0 0 40px;
+        }
+
+        .icon-red {
+            background: #FEE2E2;
+            color: #EF4444;
+        }
+
+        .icon-orange {
+            background: #FFEDD5;
+            color: #F97316;
+        }
+
+        .icon-green {
+            background: #ECFDF5;
+            color: #10B981;
+        }
+
+        .p-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .p-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .p-title {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: #111827;
+            margin: 0;
+        }
+
+        .p-tag {
+            font-size: 9.5px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .tag-red {
+            background: #FEE2E2;
+            color: #B91C1C;
+        }
+
+        .tag-orange {
+            background: #FFEDD5;
+            color: #C2410C;
+        }
+
+        .tag-green {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .p-desc {
+            font-size: 12px;
+            color: #4B5563;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .highlight-lever .p-desc {
+            color: #374151;
+        }
+
+        /* --- SLIDE 3 SPECIFIC STYLES --- */
+        .slide-3-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0 40px 10px 40px;
+            margin-top: -30px;
+            /* Pulls the entire block up to counteract main-content padding */
+            align-items: center;
+        }
+
+        .slide-3-top {
+            flex: 0 0 auto;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .slide-3-h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.15;
+            margin: 0 0 6px 0;
+            letter-spacing: -1px;
+        }
+
+        .slide-3-sub {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
+        .slide-3-cards {
+            display: flex;
+            gap: 40px;
+            width: 100%;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .profile-card {
+            width: 380px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            padding: 24px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .profile-name {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .profile-desc {
+            font-size: 16px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            width: 100%;
+        }
+
+        .profile-desc strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .profile-desc .danger {
+            color: var(--danger-red);
+            font-weight: 700;
+        }
+
+        .slide-3-footer {
+            margin-top: 16px;
+            background: rgba(249, 201, 53, 0.15);
+            border-left: 4px solid var(--rapido-yellow);
+            padding: 16px 24px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+            width: 100%;
+            max-width: 840px;
+        }
+
+        /* --- SLIDE 4 SPECIFIC STYLES --- */
+        .slide-4-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin-top: -20px;
+            /* Pulls the entire block up to counteract main-content padding */
+            position: relative;
+        }
+
+        .slide-4-top {
+            flex: 0 0 auto;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+
+        .slide-4-h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.15;
+            margin: 0 0 6px 0;
+            letter-spacing: -1px;
+        }
+
+        .slide-4-sub {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin: 0;
+            max-width: 900px;
+            line-height: 1.4;
+        }
+
+        .flowchart-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 60px;
+            padding-bottom: 80px;
+        }
+
+        .flow-line {
+            position: absolute;
+            height: 4px;
+            background: #D1D5DB;
+            top: 50%;
+            left: 80px;
+            width: 320px;
+            z-index: 1;
+            transform: translateY(-50%);
+            margin-top: -64px;
+        }
+
+        .flow-line-red {
+            position: absolute;
+            height: 4px;
+            background: var(--danger-red);
+            top: 50%;
+            left: 400px;
+            width: 180px;
+            z-index: 1;
+            transform: translateY(-50%);
+            margin-top: -64px;
+            background-image: linear-gradient(45deg, transparent 25%, rgba(255, 255, 255, 0.5) 25%, rgba(255, 255, 255, 0.5) 50%, transparent 50%, transparent 75%, rgba(255, 255, 255, 0.5) 75%, rgba(255, 255, 255, 0.5) 100%);
+            background-size: 20px 20px;
+        }
+
+        .nodes-container {
+            display: flex;
+            align-items: center;
+            gap: 120px;
+            position: relative;
+            z-index: 2;
+            margin-top: -100px;
+        }
+
+        .flow-node-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            width: 40px;
+        }
+
+        .flow-node {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 4px solid var(--trust-green);
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        .flow-label {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .floating-tag {
+            position: absolute;
+            top: -60px;
+            left: -20px;
+            font-size: 16px;
+            font-style: italic;
+            color: var(--text-secondary);
+            background: #FFFFFF;
+            padding: 8px 16px;
+            border-radius: 16px;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #E5E7EB;
+        }
+
+        .flow-node-danger-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin-left: 20px;
+        }
+
+        .flow-node-danger {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--danger-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin-bottom: 12px;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .flow-label-danger {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--danger-red);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .breakdown-line {
+            position: absolute;
+            width: 2px;
+            height: 60px;
+            border-left: 2px dashed var(--danger-red);
+            top: 130px;
+            left: 50%;
+            z-index: 1;
+        }
+
+        .breakdown-box {
+            position: absolute;
+            top: 190px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 380px;
+            background: #FFFFFF;
+            border-radius: 24px;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            font-size: 16px;
+            color: var(--text-primary);
+            line-height: 1.5;
+            z-index: 2;
+            text-align: left;
+        }
+
+        .highlight-red {
+            color: var(--danger-red);
+            font-weight: 800;
+        }
+
+        .pm-callout {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            border-left: 6px solid var(--rapido-yellow);
+            padding: 20px 24px;
+            width: 480px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        /* --- SLIDE 5 SPECIFIC STYLES --- */
+        .slide-7-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0 40px;
+            align-items: center;
+        }
+
+        .slide-7-top {
+            flex: 0 0 auto;
+            margin-bottom: 12px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .slide-7-h2 {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.15;
+            margin: 0 0 16px 0;
+            letter-spacing: -1px;
+        }
+
+        .slide-7-sub {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin: 0 auto 16px auto;
+            max-width: 1200px;
+        }
+
+        .slide-5-tag {
+            font-size: 16px;
+            font-style: italic;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 12px;
+            display: inline-block;
+            border: 1px solid #E5E7EB;
+        }
+
+        .elimination-matrix {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            flex: 1;
+            justify-content: flex-start;
+        }
+
+        .matrix-row-discarded {
+            background: #F3F4F6;
+            border-radius: 12px;
+            padding: 12px 20px;
+            opacity: 0.5;
+            display: flex;
+            align-items: center;
+            border: 1px solid #E5E7EB;
+        }
+
+        .discarded-text {
+            font-size: 16px;
+            color: var(--sidebar-inactive);
+            text-decoration: line-through;
+            font-weight: 500;
+        }
+
+        .matrix-row-winner {
+            background: var(--rapido-yellow);
+            border-radius: 16px;
+            padding: 20px 24px;
+            border: 2px solid #111827;
+            box-shadow: 0 15px 30px rgba(17, 24, 39, 0.15);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .winner-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+        }
+
+        .winner-sub {
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .pm-callout-overlap {
+            position: absolute;
+            bottom: -16px;
+            right: -16px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            border-left: 8px solid var(--trust-green);
+            padding: 16px 20px;
+            width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.5;
+            z-index: 3;
+        }
+
+        /* --- SLIDE 9 (NOTION PRIORITIZATION TABLE) SPECIFIC STYLES --- */
+        .slide-8-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0 20px;
+            margin-top: -25px;
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-8-top {
+            flex: 0 0 auto;
+            margin-bottom: 12px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .slide-8-h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.15;
+            margin: 0 0 6px 0;
+            letter-spacing: -1px;
+        }
+
+        .slide-8-sub {
+            font-size: 15px;
+            font-weight: 500;
+            color: #4B5563;
+            margin: 0 auto;
+            max-width: 900px;
+        }
+
+        .notion-table-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            width: 100%;
+            max-width: 960px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .notion-styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            table-layout: fixed;
+            color: #37352F;
+        }
+
+        .notion-styled-table th,
+        .notion-styled-table td {
+            border: 1px solid #E9ECEF;
+            padding: 7px 12px;
+            text-align: left;
+            vertical-align: middle;
+            line-height: 1.35;
+        }
+
+        .notion-styled-table th {
+            background-color: #F7F7F5;
+            font-weight: 600;
+            color: rgba(55, 53, 47, 0.7);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .notion-styled-table .col-solution {
+            width: 58%;
+        }
+
+        .notion-styled-table .col-num {
+            text-align: center;
+            width: 10.5%;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .notion-styled-table .highlight-winner {
+            background-color: #FBF3DB;
+        }
+
+        .notion-solution-title {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .winner-callout-banner {
+            background: #ECFDF5;
+            border: 1.5px solid #10B981;
+            border-radius: 10px;
+            padding: 8px 16px;
+            width: 100%;
+            max-width: 960px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 12.5px;
+            color: #065F46;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+        }
+
+        /* Quadrant Chart */
+        .quadrant-chart {
+            width: 100%;
+            height: 100%;
+            max-height: 400px;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            border-left: 2px solid var(--text-secondary);
+            border-bottom: 2px solid var(--text-secondary);
+            margin-left: 40px;
+            margin-bottom: 40px;
+        }
+
+        .axis-label-y {
+            position: absolute;
+            left: -50px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        .axis-label-x {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
+        }
+
+        .quadrant {
+            position: relative;
+            border-bottom: 1px dashed #D1D5DB;
+            border-right: 1px dashed #D1D5DB;
+        }
+
+        .quadrant:nth-child(2),
+        .quadrant:nth-child(4) {
+            border-right: none;
+        }
+
+        .quadrant:nth-child(3),
+        .quadrant:nth-child(4) {
+            border-bottom: none;
+        }
+
+        .sweet-spot {
+            background-color: #D1FAE5;
+        }
+
+        .data-node {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+
+        .node-winner {
+            width: 120px;
+            height: 120px;
+            background: var(--rapido-yellow);
+            color: var(--text-primary);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid #111827;
+            font-size: 16px;
+        }
+
+        .node-discarded {
+            width: 80px;
+            height: 80px;
+            background: #E5E7EB;
+            color: #9CA3AF;
+            font-size: 12px;
+            border: 1px solid #D1D5DB;
+            font-weight: 600;
+        }
+
+
+        /* --- JOURNEY MAP GRID STYLES --- */
+        .journey-grid-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        .journey-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .grid-breakout {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            width: calc(100% + 60px);
+            margin-left: -30px;
+        }
+
+        .grid-breakout .journey-step {
+            flex: 0 1 165px;
+            max-width: 180px;
+        }
+
+        .grid-breakout {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            width: calc(100% + 60px);
+            margin-left: -30px;
+        }
+
+        .grid-breakout .journey-step {
+            flex: 0 1 165px;
+            max-width: 180px;
+        }
+
+        .journey-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 0 1 170px;
+            /* Force consistent sizing */
+            min-width: 0;
+            max-width: 180px;
+        }
+
+        .journey-image-placeholder {
+            width: 100%;
+            aspect-ratio: 9/16;
+            background: #F3F4F6;
+            border: 2px dashed #D1D5DB;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9CA3AF;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .journey-step-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .journey-step-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 4px;
+        }
+
+        .v1-quote {
+            font-size: 13px;
+            color: #4B5563;
+            font-style: italic;
+            border-left: 3px solid var(--rapido-yellow);
+            padding-left: 10px;
+            margin-top: 8px;
+            line-height: 1.4;
+            background: #FEF3C7;
+            padding: 8px 10px;
+            border-radius: 4px 8px 8px 4px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        .journey-step.danger .journey-image-placeholder {
+            border-color: var(--danger-red);
+            background: rgba(239, 68, 68, 0.05);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+            color: var(--danger-red);
+        }
+
+        .journey-step.danger .journey-step-label {
+            color: var(--danger-red);
+        }
+
+        .pm-callout-bottom {
+            margin-top: 12px;
+            background: #FFFFFF;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            border-left: 6px solid var(--rapido-yellow);
+            padding: 12px 20px;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        /* --- SLIDE 10 (SOLUTION WIREFRAMES & 5-SCREEN SHOWCASE) SPECIFIC STYLES --- */
+        .slide-9-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0 10px;
+            margin-top: -30px;
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-9-top {
+            flex: 0 0 auto;
+            margin-bottom: 12px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .slide-9-h2 {
+            font-size: 34px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.15;
+            margin: 0 0 6px 0;
+            letter-spacing: -1px;
+        }
+
+        .slide-9-sub {
+            font-size: 15px;
+            font-weight: 500;
+            color: #4B5563;
+            margin: 0 auto;
+            max-width: 920px;
+            line-height: 1.4;
+        }
+
+        .showcase-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 950px;
+        }
+
+        /* HERO: 7th Step Pre-Ride Matching */
+        .hero-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .hero-tag {
+            background: var(--rapido-yellow);
+            color: #111827;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .hero-phone {
+            width: 175px;
+            height: 378px;
+            background: #111827;
+            border-radius: 26px;
+            border: 6px solid #111827;
+            box-shadow: 0 16px 36px rgba(249, 201, 53, 0.25), 0 0 0 2px var(--rapido-yellow);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-phone img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+        }
+
+        .hero-caption {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #065F46;
+            background: #ECFDF5;
+            border: 1.5px solid #10B981;
+            padding: 5px 12px;
+            border-radius: 12px;
+            margin-top: 8px;
+            text-align: center;
+            line-height: 1.35;
+        }
+
+        /* Flow Arrow */
+        .flow-separator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #9CA3AF;
+            flex-shrink: 0;
+        }
+
+        .flow-separator span {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6B7280;
+        }
+
+        .flow-separator .arrow {
+            font-size: 24px;
+            color: #9CA3AF;
+        }
+
+        /* Post-Ride Rating Screens Section */
+        .ratings-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .ratings-tag {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #4B5563;
+            margin-bottom: 2px;
+        }
+
+        .ratings-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+
+        .rating-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .rating-phone {
+            width: 136px;
+            height: 294px;
+            background: #111827;
+            border-radius: 20px;
+            border: 4px solid #111827;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rating-phone img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+        }
+
+        .rating-caption {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-top: 6px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .rating-caption.c-5 {
+            background: #ECFDF5;
+            color: #047857;
+            border: 1px solid #A7F3D0;
+        }
+
+        .rating-caption.c-3 {
+            background: #F3F4F6;
+            color: #374151;
+            border: 1px solid #E5E7EB;
+        }
+
+        .rating-caption.c-2 {
+            background: #FFF7ED;
+            color: #C2410C;
+            border: 1px solid #FED7AA;
+        }
+
+        .rating-caption.c-1 {
+            background: #FEF2F2;
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+        }
+
+        /* 4 Logic Cards Below */
+        .logic-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        .logic-card {
+            background: #FFFFFF;
+            border-radius: 10px;
+            padding: 8px 10px;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            box-sizing: border-box;
+        }
+
+        .logic-card .badge {
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .logic-card .text {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.35;
+            font-weight: 500;
+        }
+
+        .logic-card.c-5 {
+            border-left: 3.5px solid var(--trust-green);
+            border: 1px solid #A7F3D0;
+            background: #F0FDF4;
+        }
+
+        .logic-card.c-5 .badge {
+            background: #D1FAE5;
+            color: var(--trust-green);
+        }
+
+        .logic-card.c-5 .text {
+            color: #065F46;
+            font-weight: 600;
+        }
+
+        .logic-card.c-3 {
+            border-left: 3.5px solid #6B7280;
+        }
+
+        .logic-card.c-3 .badge {
+            background: #F3F4F6;
+            color: #374151;
+        }
+
+        .logic-card.c-2 {
+            border-left: 3.5px solid #F97316;
+        }
+
+        .logic-card.c-2 .badge {
+            background: #FFEDD5;
+            color: #F97316;
+        }
+
+        .logic-card.c-1 {
+            border-left: 3.5px solid var(--danger-red);
+        }
+
+        .logic-card.c-1 .badge {
+            background: #FEE2E2;
+            color: var(--danger-red);
+        }
+
+        /* --- SLIDE 11 (SYSTEM LOGIC & DUAL-LOOP ARCHITECTURE) SPECIFIC STYLES --- */
+        .slide-10-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0 10px;
+            margin-top: -30px;
+            box-sizing: border-box;
+            justify-content: space-between;
+        }
+
+        .slide-10-top {
+            flex: 0 0 auto;
+            margin-bottom: 8px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .slide-10-h2 {
+            font-size: 33px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.15;
+            margin: 0 0 6px 0;
+            letter-spacing: -1px;
+        }
+
+        .slide-10-sub {
+            font-size: 14.5px;
+            font-weight: 500;
+            color: #4B5563;
+            margin: 0 auto;
+            max-width: 900px;
+            line-height: 1.4;
+        }
+
+        /* 3-Stage Top Progress Row */
+        .stage-flow-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #FFFFFF;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 10px 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            flex: 0 0 auto;
+        }
+
+        .stage-flow-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stage-num-badge {
+            background: #111827;
+            color: #FFFFFF;
+            font-size: 11.5px;
+            font-weight: 800;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .stage-flow-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stage-flow-title {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: #111827;
+        }
+
+        .stage-flow-desc {
+            font-size: 11px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .stage-flow-arrow {
+            color: #9CA3AF;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Main 2-Column Logic Grid */
+        .dual-loop-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            flex: 1 1 auto;
+            margin: 8px 0;
+        }
+
+        .loop-column-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 14px 18px;
+            border: 1.5px solid #E5E7EB;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .loop-column-card.green-loop {
+            border-top: 4px solid var(--trust-green);
+        }
+
+        .loop-column-card.red-loop {
+            border-top: 4px solid var(--danger-red);
+        }
+
+        .loop-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #F3F4F6;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+        }
+
+        .loop-card-title {
+            font-size: 15px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .green-loop .loop-card-title {
+            color: #047857;
+        }
+
+        .red-loop .loop-card-title {
+            color: #B91C1C;
+        }
+
+        .loop-badge {
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .green-loop .loop-badge {
+            background: #D1FAE5;
+            color: #047857;
+        }
+
+        .red-loop .loop-badge {
+            background: #FEE2E2;
+            color: #B91C1C;
+        }
+
+        /* Logic Step Rows */
+        .step-row-list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            flex: 1;
+            justify-content: space-around;
+        }
+
+        .step-row-item {
+            background: #F9FAFB;
+            border-radius: 9px;
+            padding: 9px 12px;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .green-loop .step-row-item {
+            border-left: 4px solid var(--trust-green);
+            background: #F0FDF4;
+        }
+
+        .red-loop .step-row-item {
+            border-left: 4px solid var(--danger-red);
+            background: #FEF2F2;
+        }
+
+        .step-row-header {
+            font-size: 12px;
+            font-weight: 800;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .step-row-desc {
+            font-size: 11.5px;
+            color: #4B5563;
+            line-height: 1.35;
+        }
+
+        .green-loop .step-row-desc {
+            color: #065F46;
+        }
+
+        .red-loop .step-row-desc {
+            color: #991B1B;
+        }
+
+        /* PM Insight Bottom Banner */
+        .pm-guardrail-banner {
+            background: #FFFBEB;
+            border: 1.5px solid #FCD34D;
+            border-left: 6px solid var(--rapido-yellow);
+            border-radius: 11px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 2px 8px rgba(249, 201, 53, 0.1);
+            flex: 0 0 auto;
+        }
+
+        .pm-banner-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .pm-banner-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .pm-banner-title {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: #92400E;
+        }
+
+        .pm-banner-text {
+            font-size: 11.5px;
+            color: #78350F;
+            line-height: 1.4;
+        }
+
+        .pm-banner-text strong {
+            color: #111827;
+        }
+
+        /* --- SLIDE 12 (METRICS & GROWTH FRAMEWORK) SPECIFIC STYLES --- */
+        .slide-11-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0 10px;
+            margin-top: -30px;
+            box-sizing: border-box;
+            justify-content: space-between;
+        }
+
+        .slide-11-top {
+            flex: 0 0 auto;
+            margin-bottom: 6px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .slide-11-h2 {
+            font-size: 33px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.15;
+            margin: 0 0 6px 0;
+            letter-spacing: -1px;
+        }
+
+        .slide-11-sub {
+            font-size: 14.5px;
+            font-weight: 500;
+            color: #4B5563;
+            margin: 0 auto;
+            max-width: 900px;
+            line-height: 1.4;
+        }
+
+        /* 1. North Star Hero Card (Clean & Spacious) */
+        .north-star-card {
+            background: #FFFFFF;
+            border-radius: 12px;
+            border: 1.5px solid #F59E0B;
+            border-left: 6px solid var(--rapido-yellow);
+            padding: 14px 20px;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 0 0 auto;
+        }
+
+        .ns-badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ns-badge {
+            background: #FEF3C7;
+            color: #92400E;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 999px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ns-sub-tag {
+            font-size: 11px;
+            font-weight: 700;
+            color: #047857;
+            background: #ECFDF5;
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid #A7F3D0;
+        }
+
+        .ns-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.35;
+        }
+
+        .ns-title span {
+            color: #D97706;
+            text-decoration: underline;
+        }
+
+        .ns-description {
+            font-size: 12px;
+            color: #4B5563;
+            line-height: 1.4;
+        }
+
+        .ns-description strong {
+            color: #111827;
+        }
+
+        /* 2. Secondary Metrics 3-Column Grid */
+        .secondary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            flex: 1 1 auto;
+            margin: 10px 0;
+        }
+
+        .metric-box {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1.5px solid #E5E7EB;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .metric-box.b-awareness {
+            border-top: 4px solid #3B82F6;
+        }
+
+        .metric-box.b-adoption {
+            border-top: 4px solid var(--trust-green);
+        }
+
+        .metric-box.b-guardrail {
+            border-top: 4px solid var(--danger-red);
+        }
+
+        .metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .metric-pill {
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .b-awareness .metric-pill {
+            background: #EFF6FF;
+            color: #1D4ED8;
+        }
+
+        .b-adoption .metric-pill {
+            background: #ECFDF5;
+            color: #047857;
+        }
+
+        .b-guardrail .metric-pill {
+            background: #FEF2F2;
+            color: #B91C1C;
+        }
+
+        .metric-target {
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #6B7280;
+        }
+
+        .metric-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.3;
+        }
+
+        .metric-body {
+            font-size: 11.5px;
+            color: #4B5563;
+            line-height: 1.4;
+        }
+
+        .metric-body strong {
+            color: #111827;
+        }
+
+        .metric-callout {
+            background: #F9FAFB;
+            border-radius: 8px;
+            padding: 7px 10px;
+            font-size: 11px;
+            line-height: 1.35;
+            color: #374151;
+            border-left: 3px solid #9CA3AF;
+        }
+
+        .b-awareness .metric-callout {
+            border-left-color: #3B82F6;
+            background: #F8FAFC;
+            color: #1E40AF;
+        }
+
+        .b-adoption .metric-callout {
+            border-left-color: #10B981;
+            background: #F0FDF4;
+            color: #065F46;
+        }
+
+        .b-guardrail .metric-callout {
+            border-left-color: #EF4444;
+            background: #FEF2F2;
+            color: #991B1B;
+        }
+
+        /* 3. Bottom Takeaway Banner */
+        .bottom-takeaway-banner {
+            background: #FFFFFF;
+            border: 1.5px solid #E5E7EB;
+            border-left: 6px solid #111827;
+            border-radius: 10px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            flex: 0 0 auto;
+        }
+
+        .takeaway-text {
+            font-size: 11.5px;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .takeaway-text strong {
+            color: #111827;
+        }
+
+        /* --- SLIDE 13: CATEGORY MANAGEMENT @ URBAN COMPANY SPECIFIC STYLES --- */
+                .slide-12-container {
+            display: grid;
+            grid-template-columns: 1.18fr 0.95fr;
+            gap: 20px;
+            width: calc(100% + 40px);
+            margin-left: -20px;
+            height: calc(100% + 65px);
+            margin-top: -35px;
+            box-sizing: border-box;
+            align-items: stretch;
+        }
+
+        .slide-12-left {
+            background: #FFFFFF;
+            border-radius: 18px;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            border: 1.5px solid #E5E7EB;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.04);
+        }
+
+        .cm-top-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #BFDBFE;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: fit-content;
+            margin-bottom: 6px;
+        }
+
+        .slide-12-h2 {
+            font-size: 26px;
+            font-weight: 900;
+            color: #111827;
+            line-height: 1.2;
+            margin: 0 0 6px 0;
+            letter-spacing: -0.8px;
+        }
+
+        .slide-12-h2 span {
+            color: #D97706;
+        }
+
+        .slide-12-sub {
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #4B5563;
+            margin: 0 0 12px 0;
+            line-height: 1.4;
+        }
+
+        .cm-pillar-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .cm-pillar-item {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .cm-pillar-item.demand {
+            border-left: 4px solid #3B82F6;
+            background: #F8FAFC;
+        }
+
+        .cm-pillar-item.supply {
+            border-left: 4px solid #10B981;
+            background: #F0FDF4;
+        }
+
+        .cm-pillar-item.platform {
+            border-left: 4px solid #F59E0B;
+            background: #FFFBEB;
+        }
+
+        .cm-icon-box {
+            font-size: 22px;
+            line-height: 1;
+            margin-top: 2px;
+        }
+
+        .cm-pillar-content {
+            flex: 1;
+        }
+
+        .cm-pillar-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cm-pillar-tag {
+            font-size: 9.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
+        .tag-demand {
+            background: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .tag-supply {
+            background: #DCFCE7;
+            color: #166534;
+        }
+
+        .tag-platform {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .cm-pillar-desc {
+            font-size: 11.5px;
+            color: #374151;
+            line-height: 1.45;
+        }
+
+        /* Right Pitch Column */
+        .slide-12-right {
+            background: #111827;
+            border-radius: 18px;
+            padding: 24px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+            border: 1.5px solid #1F2937;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+            color: #FFFFFF;
+        }
+
+        .uc-badge-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            gap: 8px;
+        }
+
+        .uc-target-badge {
+            background: var(--rapido-yellow);
+            color: #111827;
+            font-size: 9.5px;
+            font-weight: 900;
+            padding: 3px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .uc-sub-tag {
+            font-size: 10px;
+            color: #9CA3AF;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .cm-applicant-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: #FFFFFF;
+            line-height: 1.15;
+            margin: 0 0 2px 0;
+            letter-spacing: -0.5px;
+        }
+
+        .cm-applicant-sub {
+            font-size: 12px;
+            color: #9CA3AF;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .cm-operator-quote {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 3.5px solid var(--rapido-yellow);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 11.5px;
+            color: #E5E7EB;
+            line-height: 1.45;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .cm-superpowers-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .cm-power-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 11.5px;
+            color: #D1D5DB;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 7px 10px;
+            border-radius: 7px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            line-height: 1.35;
+        }
+
+        .cm-power-item strong {
+            color: #FFFFFF;
+        }
+
+        .cm-footer-cta {
+            background: linear-gradient(135deg, #F9C935 0%, #F59E0B 100%);
+            color: #111827;
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11.5px;
+            font-weight: 800;
+            box-shadow: 0 4px 14px rgba(249, 201, 53, 0.25);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .cm-footer-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(249, 201, 53, 0.35);
+        }
+
+
+        /* Controller below the slide */
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .download-cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 22px;
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            color: #F9C935;
+            border: 1.5px solid #F9C935;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+            margin-left: 12px;
+        }
+
+        .download-cta-btn:hover {
+            background: #F9C935;
+            color: #111827;
+            border-color: #111827;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(249, 201, 53, 0.4);
+        }
+
+        .download-cta-btn svg {
+            transition: transform 0.2s ease;
+        }
+
+        .download-cta-btn:hover svg {
+            transform: translateY(2px);
+        }
+
+
+        button {
+            padding: 12px 24px;
+            background-color: var(--text-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #374151;
+        }
+
+        button:disabled {
+            background-color: #9CA3AF;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Mobile Device Frame for Personas */
+        .mobile-frame {
+            width: 360px;
+            height: 500px;
+            /* Slightly reduced to guarantee it clears the yellow bottom bar */
+            background: #FFFFFF;
+            border-radius: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            border: 8px solid #111827;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex-shrink: 0;
+            text-align: left;
+        }
+
+        .mobile-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 18px;
+            background: #111827;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 10;
+        }
+
+        .mobile-content {
+            flex: 1;
+            padding: 24px 16px 4px 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .p-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .p-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #F3F4F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .p-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .p-section {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .p-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 800;
+            color: #9CA3AF;
+            margin: 0;
+        }
+
+        .p-text {
+            font-size: 12px;
+            color: var(--text-primary);
+            line-height: 1.4;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .p-text-italic {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            font-style: italic;
+            border-left: 3px solid var(--rapido-yellow);
+            padding-left: 10px;
+        }
+
+        .p-highlight-red {
+            background: rgba(239, 68, 68, 0.05);
+            padding: 8px;
+            border-radius: 6px;
+            border-left: 4px solid var(--danger-red);
+        }
+
+        .p-highlight-red .p-label {
+            color: var(--danger-red);
+        }
+
+        .p-highlight-yellow {
+            background: rgba(249, 201, 53, 0.1);
+            padding: 8px;
+            border-radius: 6px;
+            border-left: 4px solid #D97706;
+        }
+
+        .p-highlight-yellow .p-label {
+            color: #B45309;
+        }
+
+        /* --- SLIDE 7 (CORE PROBLEMS NOTION TABLE) SPECIFIC STYLES --- */
+        .slide-cp-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0 10px;
+            margin-top: -25px;
+            box-sizing: border-box;
+            justify-content: space-between;
+        }
+
+        .slide-cp-top {
+            flex: 0 0 auto;
+            margin-bottom: 6px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .slide-cp-h2 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.15;
+            margin: 0 0 4px 0;
+            letter-spacing: -1px;
+        }
+
+        .slide-cp-sub {
+            font-size: 14px;
+            font-weight: 500;
+            color: #4B5563;
+            margin: 0 auto;
+            max-width: 900px;
+            line-height: 1.35;
+        }
+
+        .notion-table-wrapper {
+            background: #FFFFFF;
+            border-radius: 12px;
+            border: 1.5px solid #E5E7EB;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            margin-top: 2px;
+        }
+
+        .notion-tbl-head {
+            display: grid;
+            grid-template-columns: 270px 1fr 280px;
+            background: #F8FAFC;
+            padding: 7px 16px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1.5px solid #E2E8F0;
+        }
+
+        .notion-tbl-row {
+            display: grid;
+            grid-template-columns: 270px 1fr 280px;
+            padding: 6px 16px;
+            align-items: center;
+            border-bottom: 1px solid #F1F5F9;
+            font-size: 11.5px;
+            gap: 12px;
+            flex: 1;
+            box-sizing: border-box;
+        }
+
+        .notion-tbl-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Core Highlight Row (Problem #2) */
+        .notion-tbl-row.row-core-highlight {
+            background: #FEF2F2;
+            border-left: 5px solid var(--danger-red);
+            border-right: 2px solid var(--danger-red);
+        }
+
+        .col-prob {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .prob-title-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 800;
+            font-size: 12.5px;
+            color: #111827;
+        }
+
+        .row-core-highlight .prob-title-row {
+            color: #B91C1C;
+        }
+
+        .prob-pill {
+            font-size: 9.5px;
+            font-weight: 800;
+            padding: 1.5px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: fit-content;
+        }
+
+        .pill-critical {
+            background: #FEE2E2;
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+        }
+
+        .pill-revenue {
+            background: #FFEDD5;
+            color: #C2410C;
+            border: 1px solid #FED7AA;
+        }
+
+        .pill-safety {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #FECACA;
+        }
+
+        .pill-friction {
+            background: #F1F5F9;
+            color: #475569;
+            border: 1px solid #E2E8F0;
+        }
+
+        .col-reality {
+            color: #374151;
+            font-size: 11.5px;
+            line-height: 1.35;
+        }
+
+        .row-core-highlight .col-reality {
+            color: #7F1D1D;
+            font-weight: 500;
+        }
+
+        .col-impact {
+            font-size: 11px;
+            color: #4B5563;
+            line-height: 1.35;
+            background: #F9FAFB;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #E5E7EB;
+        }
+
+        .row-core-highlight .col-impact {
+            background: #FFFFFF;
+            border-color: #FCA5A5;
+            color: #991B1B;
+            font-weight: 600;
+        }
+
+        /* --- SLIDE 8 (PRIORITIZATION) SPECIFIC STYLES --- */
+        .slide-7-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            padding: 0 20px;
+            margin-top: -25px;
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-7-top {
+            flex: 0 0 auto;
+            margin-bottom: 18px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .slide-7-h2 {
+            font-size: 34px;
+            font-weight: 800;
+            color: #111827;
+            line-height: 1.15;
+            margin: 0 0 8px 0;
+            letter-spacing: -1px;
+        }
+
+        .slide-7-sub {
+            font-size: 16px;
+            font-weight: 500;
+            color: #4B5563;
+            margin: 0 auto;
+            max-width: 900px;
+        }
+
+        .prioritization-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .prioritization-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            padding: 10px 18px;
+            box-sizing: border-box;
+        }
+
+        .prioritization-card.rejected {
+            opacity: 0.85;
+            background: #FFFFFF;
+        }
+
+        .prioritization-card.selected {
+            border: 2px solid #F59E0B;
+            background: #FFFFFF;
+            opacity: 1;
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.08);
+        }
+
+        .p-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .p-card-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #111827;
+            flex: 1;
+            margin: 0;
+        }
+
+        .p-card-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            margin-left: 10px;
+        }
+
+        .p-card-badge.rejected-badge {
+            background: #FEE2E2;
+            color: #B91C1C;
+        }
+
+        .p-card-badge.selected-badge {
+            background: #10B981;
+            color: #FFFFFF;
+        }
+
+        .p-card-body {
+            font-size: 12.5px;
+            color: #4B5563;
+            line-height: 1.4;
+            margin: 0 0 6px 0;
+        }
+
+        .pm-insight {
+            font-size: 11.5px;
+            color: #4B5563;
+            background: #F3F4F6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border-left: 3px solid #9CA3AF;
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        .prioritization-card.selected .pm-insight {
+            background: #ECFDF5;
+            border-left-color: #10B981;
+            color: #047857;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="slide-container">
+        <!-- Persistent Sidebar -->
+        <div class="sidebar">
+            <div class="chevron" id="sidebar-chevron">></div>
+            <div id="milestones-container"></div>
+            <div class="sidebar-author">Product Teardown by Nandan</div>
+        </div>
+
+        <!-- Dynamic Main Content -->
+        <div class="main-content">
+
+            <!-- Slide 1: Introduction Cover (Modern Hero Showcase) -->
+            <div id="slide-view-1" class="slide-view active">
+                <div class="slide-1-layout">
+                    <!-- Left Hero -->
+                    <div class="slide-1-left-hero">
+                        <div class="slide-1-top-badge">
+                            <span>🔍</span> Product Teardown & Case Study
+                        </div>
+
+                        <h1 class="slide-1-h1">
+                            The Rapido Trust Gap: <span>The Hidden Anxiety</span> Between Booking and Boarding.
+                        </h1>
+
+                        <p class="slide-1-sub">
+                            A Product Case Study on solving <strong>'Black-Box Anxiety'</strong> to increase User
+                            Retention.
+                        </p>
+
+                        <div class="slide-1-hook-banner">
+                            <span>💡</span>
+                            <div>How we uncovered the root cause of rider anxiety and built a solution to restore trust.
+                                👉</div>
+                        </div>
+                    </div>
+
+                    <!-- Right Phone Mockup with Dialogue Bubbles -->
+                    <div style="position: relative; display: flex; justify-content: center;">
+                        <div class="phone-mockup-wrap">
+                            <img src="assets/User Journey/6.png"
+                                class="phone-screen-img" alt="Rapido Matching Screen">
+                        </div>
+
+                        <!-- Pinpoint Dialogue Bubbles -->
+                        <div class="v1-bubble b-cash">
+                            <span>💸</span> "Will I have to pay cash?"
+                        </div>
+                        <div class="v1-bubble b-driver">
+                            <span>👤</span> "Is this really him?"
+                        </div>
+                        <div class="v1-bubble b-plate">
+                            <span>🛵</span> "Is it a different bike?"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Defining the Business Goal (Split Executive View) -->
+            <div id="slide-view-2" class="slide-view">
+                <div class="slide-2-container">
+                    <!-- Header -->
+                    <div class="slide-2-top">
+                        <h2 class="slide-2-h2">Defining the Business Goal</h2>
+                        <p class="slide-2-sub">Setting the strategic direction, prioritization, and metrics for the
+                            entire product teardown.</p>
+                    </div>
+
+                    <!-- Split Executive Container -->
+                    <div class="split-container">
+                        <!-- Left Mandate Card -->
+                        <div class="mandate-card">
+                            <div>
+                                <div class="mandate-badge-row">
+                                    <span class="mandate-tag">Strategic Mandate</span>
+                                    <span class="mandate-sub-label">Step 1: The "Why"</span>
+                                </div>
+                                <div class="mandate-quote">
+                                    "To increase <span>user retention</span> by solving the black box anxiety and trust
+                                    issues that safety-conscious commuters face during the ride-matching phase."
+                                </div>
+                            </div>
+
+                            <div class="mandate-context-box">
+                                <strong>🎯 Why This Goal Matters:</strong> It is not just a superficial UX problem; it
+                                directly prevents premature churn, protects high-LTV users, and anchors the North Star
+                                metric.
+                            </div>
+
+                            <div class="mandate-footer">
+                                <span>North Star Target:</span>
+                                <strong style="color: #F9C935;">Eliminate Pre-Ride Churn</strong>
+                            </div>
+                        </div>
+
+                        <!-- Right 3 Pillars Stack -->
+                        <div class="pillars-stack">
+                            <!-- Pillar 1: Black-Box Anxiety -->
+                            <div class="pillar-row">
+                                <div class="p-icon-box icon-red">🔗</div>
+                                <div class="p-content">
+                                    <div class="p-title-row">
+                                        <span class="p-title">1. Black-Box Anxiety</span>
+                                        <span class="p-tag tag-red">Root Cause</span>
+                                    </div>
+                                    <p class="p-desc">
+                                        Passengers experience high anxiety immediately upon matching due to fear of
+                                        unregistered or mismatched vehicles. Zero upfront verification triggers acute
+                                        distrust.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Pillar 2: The Suspense Phase -->
+                            <div class="pillar-row">
+                                <div class="p-icon-box icon-orange">⏱️</div>
+                                <div class="p-content">
+                                    <div class="p-title-row">
+                                        <span class="p-title">2. The Suspense Phase</span>
+                                        <span class="p-tag tag-orange">The 3-Min Friction Window</span>
+                                    </div>
+                                    <p class="p-desc">
+                                        Users don't cancel instantly, but wait in suspense wondering who and what
+                                        vehicle will actually arrive, acting as their own manual QA filter.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Pillar 3: Reduce Early Cancellations (HERO LEVER) -->
+                            <div class="pillar-row highlight-lever">
+                                <div class="p-icon-box icon-green">✅</div>
+                                <div class="p-content">
+                                    <div class="p-title-row">
+                                        <span class="p-title">3. Reduce Early Cancellations</span>
+                                        <span class="p-tag tag-green">The Business Lever</span>
+                                    </div>
+                                    <p class="p-desc">
+                                        By establishing trust before the Captain arrives, we aim to decrease manual
+                                        cancellations in the first 3 minutes, directly lifting Day-1 Retention and
+                                        stopping ARPU bleed.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3 Actual Content -->
+            <div id="slide-view-3" class="slide-view">
+                <div class="slide-3-container">
+                    <div class="slide-3-top">
+                        <h2 class="slide-3-h2">Understanding the real users' friction points</h2>
+                        <p class="slide-3-sub">We isolated two high-value segments actively abandoning the platform.</p>
+                    </div>
+
+                    <div class="slide-3-cards">
+                        <!-- Persona 1 (Finalized Mobile UI) -->
+                        <div class="mobile-frame">
+                            <div class="mobile-notch"></div>
+                            <div class="mobile-content">
+                                <div class="p-header">
+                                    <div class="p-avatar">👩🏻‍🎓</div>
+                                    <div class="p-name">Shruti</div>
+                                </div>
+                                <div class="p-section">
+                                    <div class="p-label">About</div>
+                                    <div class="p-text">Age 21-25 • College Student / Junior Intern • Lives in
+                                        Tier-1/Tier-2 City (Nagpur)</div>
+                                </div>
+                                <div class="p-section">
+                                    <div class="p-label">Context</div>
+                                    <div class="p-text">High frequency user (6+ rides/week). She wants to save money,
+                                        but safety is the ultimate dealbreaker when commuting at night.</div>
+                                </div>
+                                <div class="p-section">
+                                    <div class="p-label">Jobs to be Done (JTBD)</div>
+                                    <div class="p-text-italic">"Get me to my office on time without breaking my budget
+                                        or feeling unsafe."</div>
+                                </div>
+                                <div class="p-section p-highlight-red">
+                                    <div class="p-label">Core Pain</div>
+                                    <div class="p-text">The "Driver Allocated" screen spikes her anxiety. She fears fake
+                                        vehicles and reckless riders. Fundamentally distrusts the default safety
+                                        baseline.</div>
+                                </div>
+                                <div class="p-section p-highlight-yellow">
+                                    <div class="p-label">Current Workaround</div>
+                                    <div class="p-text">She rigorously filters drivers by rating. If the rating is even
+                                        slightly low (below 4.5), she cancels the ride and eats the penalty fee rather
+                                        than take the risk.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Persona 2 (Finalized Mobile UI) -->
+                        <div class="mobile-frame">
+                            <div class="mobile-notch"></div>
+                            <div class="mobile-content">
+                                <div class="p-header">
+                                    <div class="p-avatar">👨🏽‍💻</div>
+                                    <div class="p-name">Karthik</div>
+                                </div>
+                                <div class="p-section">
+                                    <div class="p-label">About</div>
+                                    <div class="p-text">Age 26-32 • Mid-Level Corporate Professional • Lives in Major
+                                        Metro (Hyderabad)</div>
+                                </div>
+                                <div class="p-section">
+                                    <div class="p-label">Context</div>
+                                    <div class="p-text">He has the money for cabs but chooses bikes to save 30 minutes
+                                        of his day. He expects the service to be as polished as his corporate life.
+                                    </div>
+                                </div>
+                                <div class="p-section">
+                                    <div class="p-label">Jobs to be Done (JTBD)</div>
+                                    <div class="p-text-italic">"Provide a professional transaction where I don't have to
+                                        engage in uncomfortable negotiations with drivers."</div>
+                                </div>
+                                <div class="p-section p-highlight-red">
+                                    <div class="p-label">Core Pain (Offline Extortion)</div>
+                                    <div class="p-text">He views Rapido as a "cheap, desi" app that fails to govern its
+                                        supply side, forcing him into unsafe offline rides without insurance.</div>
+                                </div>
+                                <div class="p-section p-highlight-yellow">
+                                    <div class="p-label">Current Workaround</div>
+                                    <div class="p-text">He is tired of fighting. Instead of arguing with Rapido drivers,
+                                        he just opens Uber Moto. He treats the extra cost as an "accountability tax."
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Slide 4: Journey Map 1/3 -->
+            <div id="slide-view-4" class="slide-view">
+                <div class="slide-4-container">
+                    <div class="slide-4-top">
+                        <h2 class="slide-4-h2">The Journey Map: Initial Frictionless Flow</h2>
+                        <p class="slide-4-sub">The early funnel is incredibly smooth. Users seamlessly open the app and
+                            set a destination.</p>
+                    </div>
+
+                    <div class="journey-grid-container">
+                        <div class="journey-grid">
+                            <div class="journey-step">
+                                <img src="assets/User Journey/1.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 1" />
+                                <div class="journey-step-label">Step 1</div>
+                                <div class="journey-step-desc">Open App</div>
+                                <div class="v1-quote">"Oh nice, loaded instantly."</div>
+                            </div>
+                            <div class="journey-step">
+                                <img src="assets/User Journey/2.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 2" />
+                                <div class="journey-step-label">Step 2</div>
+                                <div class="journey-step-desc">Enter Destination</div>
+                                <div class="v1-quote">"Office. Need to get there fast."</div>
+                            </div>
+                            <div class="journey-step">
+                                <img src="assets/User Journey/3.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 3" />
+                                <div class="journey-step-label">Step 3</div>
+                                <div class="journey-step-desc">View Options</div>
+                                <div class="v1-quote">"Bike is the cheapest and fastest option."</div>
+                            </div>
+                            <div class="journey-step">
+                                <img src="assets/User Journey/4.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 4" />
+                                <div class="journey-step-label">Step 4</div>
+                                <div class="journey-step-desc">Select Ride</div>
+                                <div class="v1-quote">"Booking it now."</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5: Journey Map 2/3 -->
+            <div id="slide-view-5" class="slide-view">
+                <div class="slide-4-container">
+                    <div class="slide-4-top">
+                        <h2 class="slide-4-h2">The Journey Map: Waiting for Captain</h2>
+                        <p class="slide-4-sub">The allocation process begins. Emotion remains neutral as the system
+                            searches.</p>
+                    </div>
+
+                    <div class="journey-grid-container">
+                        <div class="grid-breakout">
+                            <div class="journey-step">
+                                <img src="assets/User Journey/5.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 5" />
+                                <div class="journey-step-label">Step 5</div>
+                                <div class="journey-step-desc">Searching</div>
+                                <div class="v1-quote">"Okay, finding a captain..."</div>
+                            </div>
+                            <div class="journey-step">
+                                <img src="assets/User Journey/6.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 6" />
+                                <div class="journey-step-label">Step 6</div>
+                                <div class="journey-step-desc">Locating</div>
+                                <div class="v1-quote">"Still searching..."</div>
+                            </div>
+                            <div class="journey-step">
+                                <img src="assets/User Journey/7.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 7" />
+                                <div class="journey-step-label">Step 7</div>
+                                <div class="journey-step-desc">Ping Sent</div>
+                                <div class="v1-quote">"Alright, asked someone."</div>
+                            </div>
+                            <div class="journey-step">
+                                <img src="assets/User Journey/8.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 8" />
+                                <div class="journey-step-label">Step 8</div>
+                                <div class="journey-step-desc">Awaiting Acceptance</div>
+                                <div class="v1-quote">"Why is this taking 30 seconds?"</div>
+                            </div>
+                            <div class="journey-step">
+                                <img src="assets/User Journey/9.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 9" />
+                                <div class="journey-step-label">Step 9</div>
+                                <div class="journey-step-desc">Captain Found</div>
+                                <div class="v1-quote">"Finally, got one. Hope he is close."</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6: Journey Map 3/3 -->
+            <div id="slide-view-6" class="slide-view">
+                <div class="slide-4-container">
+                    <div class="slide-4-top">
+                        <h2 class="slide-4-h2">The Journey Map: The 'Happy Path' Completion</h2>
+                        <p class="slide-4-sub">For users who survive the allocation wait, the core service delivers
+                            flawlessly.</p>
+                    </div>
+
+                    <div class="journey-grid-container">
+                        <div class="journey-grid">
+                            <div class="journey-step">
+                                <img src="assets/User Journey/10.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 10" />
+                                <div class="journey-step-label">Step 10</div>
+                                <div class="journey-step-desc">Captain Arrives</div>
+                                <div class="v1-quote">"Nice, he's here on time."</div>
+                            </div>
+                            <div class="journey-step">
+                                <img src="assets/User Journey/11.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 11" />
+                                <div class="journey-step-label">Step 11</div>
+                                <div class="journey-step-desc">Ride Starts</div>
+                                <div class="v1-quote">"Helmet on, let's navigate the traffic."</div>
+                            </div>
+                            <div class="journey-step">
+                                <img src="assets/User Journey/12.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 12" />
+                                <div class="journey-step-label">Step 12</div>
+                                <div class="journey-step-desc">Reaching Destination</div>
+                                <div class="v1-quote">"Almost there, bike is definitely faster."</div>
+                            </div>
+                            <div class="journey-step">
+                                <img src="assets/User Journey/13.png"
+                                    style="width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 12px; border: 1px solid #E5E7EB; margin-bottom: 12px;"
+                                    alt="Step 13" />
+                                <div class="journey-step-label">Step 13</div>
+                                <div class="journey-step-desc">Payment & Rating</div>
+                                <div class="v1-quote">"Paid via UPI. 5 stars."</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7: Core Problems Notion Table -->
+            <div id="slide-view-7" class="slide-view">
+                <div class="slide-cp-container">
+                    <!-- Header -->
+                    <div class="slide-cp-top">
+                        <h2 class="slide-cp-h2">Core Problems Affecting Retention & Trust</h2>
+                        <p class="slide-cp-sub">Empirical research and user sentiment analysis revealed 6 critical
+                            failure points across the booking and ride lifecycle.</p>
+                    </div>
+
+                    <!-- Full Notion Table with All Values -->
+                    <div class="notion-table-wrapper">
+                        <div class="notion-tbl-head">
+                            <div>Problem Archetype</div>
+                            <div>User Reality & Root Cause</div>
+                            <div>Behavioral & Business Impact</div>
+                        </div>
+
+                        <!-- 1. Wait Times -->
+                        <div class="notion-tbl-row">
+                            <div class="col-prob">
+                                <div class="prob-title-row">1. Long Wait Times & Delays</div>
+                                <span class="prob-pill pill-friction">Friction</span>
+                            </div>
+                            <div class="col-reality">
+                                12–15 minute wait times during peak rush hours with erratic driver GPS tracking and
+                                unpredictable arrival delays.
+                            </div>
+                            <div class="col-impact">
+                                📉 <strong>Impact:</strong> Dual-booking and immediate drop-off to competitor apps (Uber
+                                Moto).
+                            </div>
+                        </div>
+
+                        <!-- 2. Unregistered Vehicles (CORE HIGHLIGHT ROW) -->
+                        <div class="notion-tbl-row row-core-highlight">
+                            <div class="col-prob">
+                                <div class="prob-title-row">🚨 2. Unregistered Vehicles</div>
+                                <span class="prob-pill pill-critical">Primary Threat (Core Bottleneck)</span>
+                            </div>
+                            <div class="col-reality">
+                                Matched bike details in-app don't match the arriving physical vehicle. Zero upfront
+                                trust verification triggers acute safety fear.
+                            </div>
+                            <div class="col-impact">
+                                🛑 <strong>Symptom:</strong> Users act as manual QA filters, cancelling rides within 3
+                                mins.
+                            </div>
+                        </div>
+
+                        <!-- 3. Offline Extortion -->
+                        <div class="notion-tbl-row">
+                            <div class="col-prob">
+                                <div class="prob-title-row">3. Offline Cash Extortion</div>
+                                <span class="prob-pill pill-revenue">Revenue Risk</span>
+                            </div>
+                            <div class="col-reality">
+                                Captains demand direct cash/UPI and cancel in-app rides, instantly voiding digital
+                                insurance and real-time safety tracking.
+                            </div>
+                            <div class="col-impact">
+                                💸 <strong>Impact:</strong> 100% lost platform commission & corporate user churn.
+                            </div>
+                        </div>
+
+                        <!-- 4. Number Leakage -->
+                        <div class="notion-tbl-row">
+                            <div class="col-prob">
+                                <div class="prob-title-row">4. Phone Number Exposure</div>
+                                <span class="prob-pill pill-safety">Safety Breach</span>
+                            </div>
+                            <div class="col-reality">
+                                Platform exposes raw user numbers during coordination, enabling post-ride WhatsApp
+                                messages and unwanted calls.
+                            </div>
+                            <div class="col-impact">
+                                ⛔ <strong>Impact:</strong> Permanent brand trust destruction & immediate app uninstall.
+                            </div>
+                        </div>
+
+                        <!-- 5. Helmet Hygiene -->
+                        <div class="notion-tbl-row">
+                            <div class="col-prob">
+                                <div class="prob-title-row">5. Helmet Quality Deficit</div>
+                                <span class="prob-pill pill-friction">Quality Gap</span>
+                            </div>
+                            <div class="col-reality">
+                                Missing, broken, or sweat-stained helmets that violate safety standards and basic
+                                personal hygiene.
+                            </div>
+                            <div class="col-impact">
+                                📉 <strong>Impact:</strong> Reinforces perception of Rapido as a low-accountability
+                                service.
+                            </div>
+                        </div>
+
+                        <!-- 6. Navigation Friction -->
+                        <div class="notion-tbl-row">
+                            <div class="col-prob">
+                                <div class="prob-title-row">6. Pickup Coordination</div>
+                                <span class="prob-pill pill-friction">Logistics</span>
+                            </div>
+                            <div class="col-reality">
+                                Inaccurate map pickup pins and landmark ambiguity require multiple manual calls while
+                                standing on busy roadways.
+                            </div>
+                            <div class="col-impact">
+                                ⚡ <strong>Impact:</strong> Increases cancellation fatigue for drivers and commuters.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8 (formerly 7) Actual Content -->
+            <div id="slide-view-8" class="slide-view">
+                <div class="slide-7-container">
+                    <div class="slide-7-top">
+                        <h2 class="slide-7-h2">Ruthless Prioritization: The Trust Bottleneck</h2>
+                        <p class="slide-7-sub">We mapped the core problems against our Business Goal. Only one survives
+                            the filter.</p>
+                    </div>
+
+                    <div class="prioritization-feed">
+                        <div class="prioritization-card rejected">
+                            <div class="p-card-header">
+                                <div class="p-card-title">1. Lack of Digital Contract Enforcement</div>
+                                <div class="p-card-badge rejected-badge">REJECTED</div>
+                            </div>
+                            <div class="p-card-body">Due to a lack of digital contract enforcement, drivers force riders
+                                into offline cash transactions upon arrival. This causes severe revenue leakage and
+                                drives high-LTV corporate users to churn to competitors for accountability.</div>
+                            <div class="pm-insight">Why we skipped it: This is a revenue leak, but it happens at pickup.
+                                It doesn't stop the initial drop-off immediately after matching.</div>
+                        </div>
+
+                        <div class="prioritization-card selected">
+                            <div class="p-card-header">
+                                <div class="p-card-title">2. App Lag & Safety Anxiety (Unregistered Vehicles)</div>
+                                <div class="p-card-badge selected-badge">SELECTED</div>
+                            </div>
+                            <div class="p-card-body">Because the app lacks physical vehicle verification,
+                                safety-conscious users fear getting on unregistered bikes. This fear leads to manual
+                                ride cancellations immediately after matching.</div>
+                            <div class="pm-insight">The 'Why': This is the exact point of churn. If users cancel
+                                instantly out of fear after matching, the rest of the journey doesn't even exist.
+                                Solving this directly hits our Business Goal.</div>
+                        </div>
+
+                        <div class="prioritization-card rejected">
+                            <div class="p-card-header">
+                                <div class="p-card-title">3. Privacy Leak & Harassment</div>
+                                <div class="p-card-badge rejected-badge">REJECTED</div>
+                            </div>
+                            <div class="p-card-body">The platform exposes raw user phone numbers to drivers during the
+                                coordination phase. This lack of persistent number masking enables post-ride harassment
+                                on WhatsApp, permanently destroying brand trust.</div>
+                            <div class="pm-insight">Why we skipped it: Severe trust issue, but happens post-ride. We
+                                need to fix the top of the funnel (matching phase) first.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 9 Actual Content -->
+            <div id="slide-view-9" class="slide-view">
+                <div class="slide-8-container">
+                    <div class="slide-8-top">
+                        <h2 class="slide-8-h2">Brainstorming & Solution Rationale</h2>
+                        <p class="slide-8-sub">We mathematically scored 4 potential solutions using the
+                            Impact-Effort-Confidence framework to find the one that eliminates anxiety with minimal
+                            engineering cost.</p>
+                    </div>
+
+                    <div class="notion-table-card">
+                        <table class="notion-styled-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-solution">Solution</th>
+                                    <th class="col-num">Impact<br>(1-5)</th>
+                                    <th class="col-num">Confidence<br>(1-5)</th>
+                                    <th class="col-num">Effort<br>(1-5)</th>
+                                    <th class="col-num">Total Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span class="notion-solution-title">Per-Ride Visual Handshake:</span> Require
+                                        captains to submit proof of the original vehicle immediately after accepting a
+                                        ride, before they can navigate to the user.
+                                    </td>
+                                    <td class="col-num">5</td>
+                                    <td class="col-num">4</td>
+                                    <td class="col-num">5</td>
+                                    <td class="col-num">4.0</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="notion-solution-title">Daily Bike Selfie:</span> Captains must
+                                        visually verify their original bike via camera before starting their daily
+                                        shift.
+                                    </td>
+                                    <td class="col-num">4</td>
+                                    <td class="col-num">4</td>
+                                    <td class="col-num">5</td>
+                                    <td class="col-num">3.2</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="notion-solution-title">Two-Way Declaration & Penalty:</span>
+                                        Captain self-declares bike status upfront. If the User's post-ride review
+                                        contradicts the Captain's declaration, the Captain faces a micro-penalty
+                                        credited to the User.
+                                    </td>
+                                    <td class="col-num">3</td>
+                                    <td class="col-num">3</td>
+                                    <td class="col-num">2</td>
+                                    <td class="col-num">4.5</td>
+                                </tr>
+                                <tr class="highlight-winner">
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
+                                            <span>⭐</span>
+                                            <span class="notion-solution-title" style="color: #92400E;">Social Proof &
+                                                Penalty Loop:</span>
+                                        </div>
+                                        Display a pre-ride social proof score (e.g., "6/15 riders confirmed original
+                                        bike") to instantly ease user anxiety, followed by a frictionless post-ride
+                                        survey. A "Yes" increases the captain's social proof counter for future rides,
+                                        while a first "No" freezes their score and issues a strict warning. A second
+                                        "No" triggers ongoing micro-penalties on future earnings until the captain
+                                        physically re-verifies their vehicle at an offline Rapido hub.
+                                    </td>
+                                    <td class="col-num" style="color: #92400E;">5</td>
+                                    <td class="col-num" style="color: #92400E;">4</td>
+                                    <td class="col-num" style="color: #92400E;">2</td>
+                                    <td class="col-num" style="font-weight: 800; font-size: 13px; color: #047857;">10.0
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="winner-callout-banner">
+                        <span>✅</span>
+                        <span><strong>Winning Solution: The Safety Engine (Social Proof System)</strong> — Prioritized
+                            with <strong>Impact: 5 | Confidence: 4 | Effort: 2</strong> (Total Score:
+                            <strong>10.0</strong> / Low effort, high impact, high confidence).</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 10 Actual Content -->
+            <div id="slide-view-10" class="slide-view">
+                <div class="slide-9-container">
+                    <div class="slide-9-top">
+                        <h2 class="slide-9-h2">The Solution Wireframes: 'The Safety Engine'</h2>
+                        <p class="slide-9-sub">Replacing 'Black-Box Anxiety' with progressive Social Proof. Here is how
+                            the UI dynamically changes to guarantee trust.</p>
+                    </div>
+
+                    <div class="showcase-container">
+                        <!-- HERO: 7th Step Pre-Ride Matching -->
+                        <div class="hero-column">
+                            <div class="hero-tag">⭐ Solution Anchor</div>
+                            <div class="hero-phone">
+                                <img src="assets/7th_step.png"
+                                    alt="Pre-Ride Allocation Screen">
+                            </div>
+                            <div class="hero-caption">
+                                ✅ <strong>Pre-Ride Trust Anchor</strong><br>
+                                <span style="font-size: 9.5px; font-weight: 500; color: #047857;">"Plate matched by 8
+                                    recent riders"</span>
+                            </div>
+                        </div>
+
+                        <!-- Arrow Flow -->
+                        <div class="flow-separator">
+                            <span>Ride Ends</span>
+                            <span class="arrow">➔</span>
+                        </div>
+
+                        <!-- ALL 4 Post-Ride Rating Screens -->
+                        <div class="ratings-section">
+                            <div class="ratings-tag">Post-Ride Dynamic Feedback & Verification Loop</div>
+
+                            <div class="ratings-grid">
+                                <!-- 5 Star -->
+                                <div class="rating-item">
+                                    <div class="rating-phone">
+                                        <img src="assets/rating_5_star.png"
+                                            alt="5 Star Rating Screen">
+                                    </div>
+                                    <div class="rating-caption c-5">5★ Same Plate</div>
+                                </div>
+
+                                <!-- 3 Star -->
+                                <div class="rating-item">
+                                    <div class="rating-phone">
+                                        <img src="assets/rating_3_star.png"
+                                            alt="3 Star Rating Screen">
+                                    </div>
+                                    <div class="rating-caption c-3">3★ Neutral Ride</div>
+                                </div>
+
+                                <!-- 2 Star -->
+                                <div class="rating-item">
+                                    <div class="rating-phone">
+                                        <img src="assets/rating_2_star.png"
+                                            alt="2 Star Rating Screen">
+                                    </div>
+                                    <div class="rating-caption c-2">2★ Penalty Loop</div>
+                                </div>
+
+                                <!-- 1 Star -->
+                                <div class="rating-item">
+                                    <div class="rating-phone">
+                                        <img src="assets/rating_1_star.png"
+                                            alt="1 Star Rating Screen">
+                                    </div>
+                                    <div class="rating-caption c-1">1★ Strict Flag</div>
+                                </div>
+                            </div>
+
+                            <!-- 4 Logic Cards Aligned Underneath -->
+                            <div class="logic-grid-4">
+                                <div class="logic-card c-5">
+                                    <div class="badge">★★★★★ Social Proof</div>
+                                    <div class="text">Positive validation. Captain's verified rider counter increments.
+                                    </div>
+                                </div>
+                                <div class="logic-card c-3">
+                                    <div class="badge">★★★ 3.0 Baseline</div>
+                                    <div class="text">Standard ride logging with baseline trust counter updates.</div>
+                                </div>
+                                <div class="logic-card c-2">
+                                    <div class="badge">★★ 2.0 Penalty Loop</div>
+                                    <div class="text">Different plate flag. Captain enters micro-penalty loop.</div>
+                                </div>
+                                <div class="logic-card c-1">
+                                    <div class="badge">★ 1.0 Strict Flag</div>
+                                    <div class="text">Immediate penalty warning & freeze for mismatched vehicles.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 11 Actual Content -->
+            <div id="slide-view-11" class="slide-view">
+                <div class="slide-10-container">
+                    <!-- Header -->
+                    <div class="slide-10-top">
+                        <h2 class="slide-10-h2">System Logic: The Self-Regulating Dual-Loop</h2>
+                        <p class="slide-10-sub">This is not just a UI change; it is an economic feedback engine. It
+                            reinforces positive social proof while gracefully correcting bad actors without choking
+                            driver supply.</p>
+                    </div>
+
+                    <!-- 3-Stage Lifecycle Flow -->
+                    <div class="stage-flow-row">
+                        <div class="stage-flow-step">
+                            <div class="stage-num-badge">1</div>
+                            <div class="stage-flow-text">
+                                <span class="stage-flow-title">Stage 1: Pre-Ride Anchor</span>
+                                <span class="stage-flow-desc">Dynamic trust badge displayed; kills pre-ride cancellation
+                                    anxiety.</span>
+                            </div>
+                        </div>
+                        <div class="stage-flow-arrow">➔</div>
+                        <div class="stage-flow-step">
+                            <div class="stage-num-badge">2</div>
+                            <div class="stage-flow-text">
+                                <span class="stage-flow-title">Stage 2: During Ride Silence</span>
+                                <span class="stage-flow-desc">UI remains completely silent; zero unnecessary mid-ride
+                                    friction.</span>
+                            </div>
+                        </div>
+                        <div class="stage-flow-arrow">➔</div>
+                        <div class="stage-flow-step">
+                            <div class="stage-num-badge">3</div>
+                            <div class="stage-flow-text">
+                                <span class="stage-flow-title">Stage 3: Post-Ride Rating & Feedback</span>
+                                <span class="stage-flow-desc">Riders select quick tags below stars (Same vs. Different
+                                    Plate) to update system values.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Dual-Loop Comparison Grid -->
+                    <div class="dual-loop-grid">
+                        <!-- 🟢 GREEN LOOP: 5-STAR SOCIAL PROOF -->
+                        <div class="loop-column-card green-loop">
+                            <div class="loop-card-header">
+                                <div class="loop-card-title">
+                                    <span>🟢 Loop 1: Social Proof & Reputation</span>
+                                </div>
+                                <div class="loop-badge">Happy Path (5★ / "Same Plate")</div>
+                            </div>
+
+                            <div class="step-row-list">
+                                <div class="step-row-item">
+                                    <div class="step-row-header">
+                                        <span>1. Positive Tag Selection</span>
+                                        <span style="color:#047857; font-size:10.5px; font-weight:800;">INPUT</span>
+                                    </div>
+                                    <div class="step-row-desc">Rider selects <strong>"Same number plate"</strong> under
+                                        the rating screen, confirming vehicle authenticity.</div>
+                                </div>
+
+                                <div class="step-row-item">
+                                    <div class="step-row-header">
+                                        <span>2. Dynamic Trust Badge Display</span>
+                                        <span style="color:#047857; font-size:10.5px; font-weight:800;">ANCHOR</span>
+                                    </div>
+                                    <div class="step-row-desc">Captain's profile updates to display: <strong>"✅ Number
+                                            Plate Matched • By 8 recent riders"</strong> on future rides.</div>
+                                </div>
+
+                                <div class="step-row-item">
+                                    <div class="step-row-header">
+                                        <span>3. State Reset & Priority Boost</span>
+                                        <span style="color:#047857; font-size:10.5px; font-weight:800;">REWARD</span>
+                                    </div>
+                                    <div class="step-row-desc">Each positive verification keeps the trust counter high
+                                        and automatically clears any previous warning status.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 🔴 RED LOOP: 1-STAR & 2-STAR PENALTY LOOP -->
+                        <div class="loop-column-card red-loop">
+                            <div class="loop-card-header">
+                                <div class="loop-card-title">
+                                    <span>🔴 Loop 2: The Progressive Margin Penalty</span>
+                                </div>
+                                <div class="loop-badge">Violations (1★-2★ / "Different Plate")</div>
+                            </div>
+
+                            <div class="step-row-list">
+                                <div class="step-row-item">
+                                    <div class="step-row-header">
+                                        <span>1. Strike 1: Normal In-App Warning</span>
+                                        <span style="color:#B91C1C; font-size:10.5px; font-weight:800;">WARNING</span>
+                                    </div>
+                                    <div class="step-row-desc">Captain receives a standard advisory warning. Profile
+                                        transparently reflects feedback (e.g. <em>7/8 verified</em>) without fines.
+                                    </div>
+                                </div>
+
+                                <div class="step-row-item">
+                                    <div class="step-row-header">
+                                        <span>2. Strike 2: Next Rider Flags Mismatch</span>
+                                        <span style="color:#B91C1C; font-size:10.5px; font-weight:800;">MARGIN
+                                            PENALTY</span>
+                                    </div>
+                                    <div class="step-row-desc">If the consecutive rider also selects "Different plate",
+                                        system applies an <strong>X% deduction from ride charges</strong>.</div>
+                                </div>
+
+                                <div class="step-row-item">
+                                    <div class="step-row-header">
+                                        <span>3. Resolution & Hub Re-Verification</span>
+                                        <span style="color:#B91C1C; font-size:10.5px; font-weight:800;">RE-VERIFY</span>
+                                    </div>
+                                    <div class="step-row-desc">Margin penalty continues on every ride until the Captain
+                                        visits a <strong>physical Rapido Hub</strong> to re-verify their vehicle.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PM Insight Banner: Why Micro-Penalties vs Hard Bans -->
+                    <div class="pm-guardrail-banner">
+                        <div class="pm-banner-icon">🛡️</div>
+                        <div class="pm-banner-content">
+                            <div class="pm-banner-title">PM Strategic Guardrail: Supply Protection & Behavioral
+                                Economics</div>
+                            <div class="pm-banner-text">
+                                <strong>Why X% Margin Penalties instead of Hard Bans?</strong> Banning drivers destroys
+                                fleet supply, increases rider wait times, and triggers surge pricing. Deducting an
+                                <strong>X% fee from ride charges</strong> makes vehicle fraud economically unviable
+                                while keeping supply on the road.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 12 Actual Content -->
+            <div id="slide-view-12" class="slide-view">
+                <div class="slide-11-container">
+                    <!-- Header -->
+                    <div class="slide-11-top">
+                        <h2 class="slide-11-h2">Measuring Success: Did We Actually Move the Needle?</h2>
+                        <p class="slide-11-sub">We don't just ship features; we measure causal business impact. Here is
+                            our rigorous data framework to measure safety and conversion outcomes.</p>
+                    </div>
+
+                    <!-- 1. NORTH STAR HERO CARD -->
+                    <div class="north-star-card">
+                        <div class="ns-badge-row">
+                            <span class="ns-badge">⭐ North Star Metric</span>
+                            <span class="ns-sub-tag">Primary Outcome</span>
+                        </div>
+                        <div class="ns-title">
+                            Decrease in Rider-Initiated 'Vehicle Mismatch' Cancellations <span>within the first 3
+                                minutes of allocation</span>.
+                        </div>
+                        <div class="ns-description">
+                            <strong>🎯 Why We Track It:</strong> Isolates the exact problem. A drop here proves the
+                            pre-ride trust badge successfully eliminated immediate safety anxiety before driver arrival.
+                        </div>
+                    </div>
+
+                    <!-- 2. SECONDARY METRICS: 3-COLUMN GRID -->
+                    <div class="secondary-grid">
+                        <!-- Awareness Metric -->
+                        <div class="metric-box b-awareness">
+                            <div>
+                                <div class="metric-header">
+                                    <span class="metric-pill">👁️ Awareness</span>
+                                    <span class="metric-target">Target: ~100%</span>
+                                </div>
+                                <div class="metric-name">Prompt Impression Rate</div>
+                                <div class="metric-body">
+                                    Ratio of <strong>(Impressions / Completed Rides)</strong> to verify reliable UI
+                                    loading across all devices, OS, and network states.
+                                </div>
+                            </div>
+                            <div class="metric-callout">
+                                <strong>Why Rate vs Volume:</strong> Rates ensure zero silent rendering failures,
+                                whereas raw volume fluctuates with marketing traffic.
+                            </div>
+                        </div>
+
+                        <!-- Adoption Metric -->
+                        <div class="metric-box b-adoption">
+                            <div>
+                                <div class="metric-header">
+                                    <span class="metric-pill">🎯 Adoption</span>
+                                    <span class="metric-target">Target: >40%</span>
+                                </div>
+                                <div class="metric-name">Verification Interaction Rate</div>
+                                <div class="metric-body">
+                                    Percentage of riders actively selecting a feedback tag (<em>"Same Plate"</em> vs
+                                    <em>"Different Plate"</em>) under the rating stars.
+                                </div>
+                            </div>
+                            <div class="metric-callout">
+                                <strong>Data Quality Guard:</strong> Monitored alongside <strong>Time-to-Click
+                                    (>0.5s)</strong> to eliminate blind reflex dismissals.
+                            </div>
+                        </div>
+
+                        <!-- Guardrail Metric -->
+                        <div class="metric-box b-guardrail">
+                            <div>
+                                <div class="metric-header">
+                                    <span class="metric-pill">🛡️ Guardrail</span>
+                                    <span class="metric-target">Do Not Disturb</span>
+                                </div>
+                                <div class="metric-name">Rating & Tipping Completion Rate</div>
+                                <div class="metric-body">
+                                    Monitors core feedback funnel health to ensure the added verification tag causes
+                                    zero drop-off in post-ride reviews or driver tips.
+                                </div>
+                            </div>
+                            <div class="metric-callout">
+                                <strong>Zero Cannibalization:</strong> Adding safety tags must not harm driver tipping
+                                income or overall marketplace satisfaction.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. BOTTOM TAKEAWAY BANNER -->
+                    <div class="bottom-takeaway-banner">
+                        <div class="takeaway-text">
+                            <strong>🎯 Causal Impact vs. Vanity Metrics:</strong> By measuring <strong>constrained
+                                rates</strong> instead of raw volume spikes and auditing <strong>Time-to-Click</strong>,
+                            we ensure every tracked data point reflects authentic user trust and real fleet compliance.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 13: Product Leadership & Systems Architecture -->
+            <div id="slide-view-13" class="slide-view">
+                <div class="slide-12-container">
+                    <!-- Left Side: 3 Core Pillars for Product Managers -->
+                    <div class="slide-12-left">
+                        <div>
+                            <div class="cm-top-badge">
+                                <span>🚀</span> Product Management • 0-to-1 Systems Architecture
+                            </div>
+                            <h2 class="slide-12-h2">The Product Manager's Lens: <span>Product-Led Defensibility</span>
+                            </h2>
+                            <p class="slide-12-sub">Features don't exist in isolation. A scalable product balances
+                                psychological user trust, self-regulating system mechanics, and causal metric guardrails.</p>
+                        </div>
+
+                        <div class="cm-pillar-stack">
+                            <!-- 1. User Psychology & CRO -->
+                            <div class="cm-pillar-item demand">
+                                <div class="cm-icon-box">🧠</div>
+                                <div class="cm-pillar-content">
+                                    <div class="cm-pillar-title">
+                                        <span>1. Behavioral Psychology & Frictionless UX</span>
+                                        <span class="cm-pillar-tag tag-demand">User Trust & CRO</span>
+                                    </div>
+                                    <div class="cm-pillar-desc">
+                                        Eliminates <strong>"Black-Box Anxiety"</strong> at the critical 0–3 min matching window. Shifts
+                                        verification from an anxious user's burden to an ambient social proof anchor—preserving zero-friction booking speed.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. System Mechanics & Supply Protection -->
+                            <div class="cm-pillar-item supply">
+                                <div class="cm-icon-box">⚙️</div>
+                                <div class="cm-pillar-content">
+                                    <div class="cm-pillar-title">
+                                        <span>2. Mechanism Design & Supply-Safe Economics</span>
+                                        <span class="cm-pillar-tag tag-supply">System Mechanics</span>
+                                    </div>
+                                    <div class="cm-pillar-desc">
+                                        Avoids destructive hard-bans that choke driver supply. Implements a self-regulating <strong>dual-loop incentive engine</strong>
+                                        (reputation boosts vs. progressive micro-margin deductions) to govern behavior via economics.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 3. Metric Causality & Data Integrity -->
+                            <div class="cm-pillar-item platform">
+                                <div class="cm-icon-box">📊</div>
+                                <div class="cm-pillar-content">
+                                    <div class="cm-pillar-title">
+                                        <span>3. Metric Causality & Anti-Gaming Guardrails</span>
+                                        <span class="cm-pillar-tag tag-platform">Metric Causality</span>
+                                    </div>
+                                    <div class="cm-pillar-desc">
+                                        Replaces vanity volume spikes with causal telemetry: isolating cancellations to the <strong>first 3 minutes</strong>, tracking
+                                        impression rates, and auditing <strong>Time-to-Click (&gt;0.5s)</strong> to eliminate reflex taps.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Candidate Profile & Executive Pitch for Product Management -->
+                    <div class="slide-12-right">
+                        <div>
+                            <div class="uc-badge-row">
+                                <span class="uc-target-badge">⭐ Product Management</span>
+                                <span class="uc-sub-tag">Systems & Growth PM</span>
+                            </div>
+                            <h3 class="cm-applicant-title">Nandan Bhole</h3>
+                            <div class="cm-applicant-sub">Associate Product Manager / Intern • Systems, Retention & AI</div>
+                        </div>
+
+                        <div class="cm-operator-quote">
+                            "Great product management isn't drawing wireframes or shipping feature bloat. It's diagnosing hidden psychological friction, engineering self-regulating system loops, and moving business metrics."
+                        </div>
+
+                        <div class="cm-superpowers-list">
+                            <div class="cm-power-item">
+                                <span>🎯</span>
+                                <div><strong>Root-Cause Discovery:</strong> Uncovered the unmeasured 0–3 min 'Black-Box Anxiety' behind silent churn through 100+ community complaints.</div>
+                            </div>
+                            <div class="cm-power-item">
+                                <span>⚙️</span>
+                                <div><strong>Dual-Loop System Design:</strong> Designed economic self-regulation that protects supply liquidity instead of blunt platform bans.</div>
+                            </div>
+                            <div class="cm-power-item">
+                                <span>📈</span>
+                                <div><strong>Quantitative Rigor:</strong> Backed by PostgreSQL data modeling, A/B testing frameworks, and telemetry anti-gaming guardrails.</div>
+                            </div>
+                        </div>
+
+                        <div class="cm-footer-cta" onclick="window.open('https://www.linkedin.com/in/nandan-bhole-/', '_blank')" style="cursor: pointer;">
+                            <span>Ready to build high-retention consumer products</span>
+                            <span>👉</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Default Placeholder for other slides -->
+            <div id="slide-view-default" class="slide-view view-default">
+                <div class="slide-number-badge" id="slide-badge">Slide X / 10</div>
+                <h1 class="slide-placeholder-title" id="slide-title">[Slide X Content Area]</h1>
+                <p class="slide-placeholder-sub" id="slide-sub">Placeholder</p>
+            </div>
+
+        </div>
+
+        <!-- Bottom Bar (Variation 6) -->
+        <div class="bottom-bar">
+            <div class="v4-hud">
+                <div class="distance-text" id="bottom-distance">
+                    <span>📍</span> 11 Stops Left
+                </div>
+                <div class="separator"></div>
+                <div class="bar-text" id="bottom-text">Setting the Context: The Rapido Trust Gap.</div>
+                <div class="timeline-track">
+                    <div class="timeline-progress" id="bottom-progress"></div>
+                    <!-- 13 Nodes -->
+                    <div class="node" style="left: 0%;"></div>
+                    <div class="node" style="left: 8.33%;"></div>
+                    <div class="node" style="left: 16.66%;"></div>
+                    <div class="node" style="left: 25%;"></div>
+                    <div class="node" style="left: 33.33%;"></div>
+                    <div class="node" style="left: 41.66%;"></div>
+                    <div class="node" style="left: 50%;"></div>
+                    <div class="node" style="left: 58.33%;"></div>
+                    <div class="node" style="left: 66.66%;"></div>
+                    <div class="node" style="left: 75%;"></div>
+                    <div class="node" style="left: 83.33%;"></div>
+                    <div class="node" style="left: 91.66%;"></div>
+                    <div class="node" style="left: 100%;"></div>
+
+                    <img src="rapido bike.png" class="bike-icon" id="bottom-bike" alt="Rapido Bike">
+                </div>
+                <div class="destination">🏁</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- UI Controls -->
+    <div class="controls">
+        <button id="prev-btn" onclick="prevSlide()" disabled>← Previous</button>
+        <div class="slide-counter" id="counter">1 / 13</div>
+        <button id="next-btn" onclick="nextSlide()">Next Slide →</button>
+        <a id="download-pdf-btn" href="rapido_case_study.pdf" download="Rapido_Product_Case_Study_Nandan_Bhole.pdf" class="download-cta-btn" title="Download High-Res PDF Case Study">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Download Case Study (PDF)</span>
+        </a>
+    </div>
+
+    <script>
+        const slideData = [
+            { id: 1, milestone: 1 },
+            { id: 2, milestone: 2 },
+            { id: 3, milestone: 3 },
+            { id: 4, milestone: 4 },
+            { id: 5, milestone: 4 },
+            { id: 6, milestone: 5 },
+            { id: 7, milestone: 6 },
+            { id: 8, milestone: 7 },
+            { id: 9, milestone: 8 },
+            { id: 10, milestone: 9 },
+            { id: 11, milestone: 10 },
+            { id: 12, milestone: 11 },
+            { id: 13, milestone: 12 }
+        ];
+
+        const slideTexts = [
+            "Setting the Context: The Rapido Trust Gap.",
+            "Defining the Business Goal: Stopping the ARPU bleed.",
+            "Understanding the user",
+            "Mapping the Journey: Where does trust break?",
+            "Deep Dive: The anxiety of captain allocation.",
+            "The Breaking Point: The 'Wrong Vehicle' problem.",
+            "Core Problems: A Mountain of Friction.",
+            "Ruthless Prioritization: Evaluating solution impact.",
+            "The Solution Space: Designing progressive social proof.",
+            "Execution: The 'Safety Engine' UI.",
+            "System Logic: Building the behavioral penalty loop.",
+            "Success Metrics: Proving the business outcome.",
+            "Product Leadership: Turning User Trust into Retention."
+        ];
+
+        let currentSlide = 1; // 1-indexed for logic
+
+        function updateUI() {
+            const data = slideData[currentSlide - 1];
+
+            // Update Bottom Bar (Variation 6)
+            const text = slideTexts[currentSlide - 1];
+            const percent = ((currentSlide - 1) / 12) * 100;
+            const stopsLeft = 13 - currentSlide;
+
+            document.getElementById('bottom-text').innerText = text;
+            document.getElementById('bottom-distance').innerHTML = stopsLeft > 0 ? `<span>📍</span> ${stopsLeft} Stops Left` : `<span>🏁</span> Arrived`;
+            document.getElementById('bottom-progress').style.width = `${percent}%`;
+            document.getElementById('bottom-bike').style.left = `calc(${percent}% - 40px)`;
+
+            // Update Sidebar Milestones (Variation 4 logic)
+            const actualContainer = document.getElementById('milestones-container');
+
+            const milestones = [
+                "Introduction", "Business Goal", "User Personas", "User Journey",
+                "The Drop-Off", "Core Problem", "Prioritization", "Finding Solutions",
+                "The Solution", "System Logic", "Metrics", "Summary"
+            ];
+
+            if (actualContainer && actualContainer.children.length === 0) {
+                milestones.forEach((m, index) => {
+                    let num = (index + 1).toString().padStart(2, '0');
+                    let div = document.createElement('div');
+                    div.className = 'milestone';
+                    div.innerHTML = `<span class="num">${num}</span><span class="text">${m}</span>`;
+                    actualContainer.appendChild(div);
+                });
+            }
+
+            if (actualContainer) {
+                const items = actualContainer.querySelectorAll('.milestone');
+                let activeTop = 0;
+                items.forEach((item, index) => {
+                    item.classList.remove('active');
+                    if (index === data.milestone - 1) {
+                        item.classList.add('active');
+                        activeTop = item.offsetTop;
+                    }
+                });
+
+                const chevron = document.getElementById('sidebar-chevron');
+                if (chevron) {
+                    chevron.style.top = (activeTop + 8) + 'px';
+                }
+            }
+
+            // Toggle Slide Views (Refactored for cleaner logic)
+            document.querySelectorAll('.slide-view').forEach(el => el.classList.remove('active'));
+            const activeView = document.getElementById(`slide-view-${currentSlide}`);
+            if (activeView) {
+                activeView.classList.add('active');
+            } else {
+                document.getElementById('slide-view-default').classList.add('active');
+
+                document.getElementById('slide-badge').innerText = `Slide ${data.id} / 13`;
+                document.getElementById('slide-title').innerText = `[Slide ${data.id}: ${data.title}]`;
+            }
+
+            // Update Controls
+            document.getElementById('counter').innerText = `${currentSlide} / 13`;
+            document.getElementById('prev-btn').disabled = (currentSlide === 1);
+            document.getElementById('next-btn').disabled = (currentSlide === 13);
+        }
+
+        function nextSlide() {
+            if (currentSlide < 13) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        // Keyboard Navigation
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'PageDown') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                prevSlide();
+            }
+        });
+
+        // Initialize
+        updateUI();
+    </script>
+</body>
+
+</html>
