@@ -1,51 +1,62 @@
-# 🏍️ Rapido Product Teardown — Interactive Prototype (Standalone)
+# 🏍️ Rapido Product Teardown — Solving 'Black-Box Anxiety' to Increase User Retention
 
-> **Solving 'Black-Box Anxiety' to Increase User Retention**  
-> *A self-contained, offline-ready Product Management case study prototype.*
-
----
-
-## 📌 Overview
-This folder is a completely independent, standalone distribution package of the **Rapido Product Teardown** web prototype. All CSS, layout logic, journey map steps, UI wireframes, and animation assets are bundled locally inside this directory.
-
-It can be:
-1. Opened directly in any browser (offline without local servers).
-2. Deployed instantly to **Vercel**, **Netlify**, or **GitHub Pages**.
-3. Shared as a zip folder with hiring managers, recruiters, or product leads without broken links or missing image elements.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Interactive%20Case%20Study-F9C935?style=for-the-badge&logo=googlechrome&logoColor=black)](https://nandan2701.github.io/rapido-product-case-study/)
+[![Download Case Study PDF](https://img.shields.io/badge/Download-Case%20Study%20(PDF)-111827?style=for-the-badge&logo=adobeacrobatreader&logoColor=red)](https://nandan2701.github.io/rapido-product-case-study/rapido_case_study.pdf)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 ---
 
-## 📁 Package Structure
+### 🌐 Quick Links
+
+* 🚀 **Live Interactive Deck:** [https://nandan2701.github.io/rapido-product-case-study/](https://nandan2701.github.io/rapido-product-case-study/)
+* 📥 **Download PDF Version:** [rapido_case_study.pdf](https://nandan2701.github.io/rapido-product-case-study/rapido_case_study.pdf)
+* 💼 **Author LinkedIn:** [Nandan Bhole](https://www.linkedin.com/in/nandan-bhole-/)
+
+---
+
+## 📌 Executive Summary
+
+Rapido dominates Indian two-wheeler micro-mobility, yet faces silent user drop-offs during the **0–3 minute captain allocation window**. 
+
+Through an analysis of 100+ community complaints and user journey mapping, this teardown diagnoses **"Black-Box Anxiety"**—the psychological friction when users are matched with an unfamiliar captain, unverified license plate, or erratic arrival ETA—triggering cancellations and app switching to Ola/Uber.
+
+### 💡 Core Solution: The Dual-Loop Safety & Trust Engine
+1. **Progressive Social Proof in Booking UI:** Dynamic pre-ride safety badges and verified plate indicators that defuse pre-arrival hesitation.
+2. **Behavioral Penalty & Incentive Loop:** Economic self-regulation system (dynamic margin discounts for verified captains vs. automated re-matching for flagged rides) protecting marketplace liquidity rather than blunt platform bans.
+3. **Telemetry Guardrails:** Anti-gaming mechanisms for cancellation rate arbitrage and location spoofing.
+
+---
+
+## 🖥️ Interactive Deck Features
+
+* **16:9 Presentation Format:** Designed with high-density Product Management layouts, real UI wireframes, and journey flows.
+* **Animated HUD Timeline:** Bottom progress bar features an animated Rapido bike tracking progress across 13 milestone stops.
+* **Keyboard Navigation:** Use `←` / `→` arrow keys or `PageUp` / `PageDown` to transition between slides.
+* **1-Click PDF Export / Download:** Built-in download button serving the high-resolution executive teardown PDF.
+
+---
+
+## 📁 Repository Structure
 
 ```
-Standalone_Product_Rapido_Case_Study/
-├── index.html                   # Main launchable interactive prototype (16:9 interactive slides)
-├── product case study rapido.html # Exact copy for direct naming reference
-├── rapido bike.png              # Bottom HUD timeline animated bike asset
-├── assets/                      # All high-resolution UI screens & journey captures
+rapido-product-case-study/
+├── index.html                   # Main interactive 16:9 web presentation deck
+├── product case study rapido.html # Reference copy for local presentation
+├── rapido_product_case_study_scrollable_deck.html # Continuous vertical scroll for PDF printing
+├── rapido_case_study.pdf        # High-res downloadable Case Study PDF
+├── rapido bike.png              # Animated HUD bike icon
+├── assets/                      # High-resolution mobile mockups & journey screenshots
 │   ├── 7th_step.png             # Pre-ride dynamic trust badge screen
-│   ├── rating_1_star.png        # Strict flag & strike penalty screen
-│   ├── rating_2_star.png        # Penalty loop & micro-margin deduction screen
-│   ├── rating_3_star.png        # Baseline rating screen
-│   ├── rating_5_star.png        # Verified plate & positive social proof screen
-│   ├── rapido bike.png          # Asset mirror
-│   └── User Journey/            # 13-step end-to-end booking funnel flow
-│       ├── 1.png .. 13.png
-└── README.md                    # Documentation & architecture breakdown
+│   ├── rating_1_star.png .. rating_5_star.png # Captain behavioral penalty screens
+│   └── User Journey/            # 13-step booking funnel journey screens
+└── README.md                    # Project documentation & live links
 ```
-
----
-
-## 🚀 How to Run
-Simply double-click `index.html` (or `product case study rapido.html`) to launch the interactive 16:9 presentation deck in any web browser.
-
-- **Navigation:** Use the bottom-right `Previous` / `Next` buttons, or the keyboard arrow keys.
-- **HUD & Milestones:** Track progress dynamically across the bottom HUD track and persistent left sidebar.
 
 ---
 
 ## 👤 Author
+
 **Nandan Bhole**  
 *B.Tech, Visvesvaraya National Institute of Technology (VNIT), Nagpur*  
-* [LinkedIn](https://www.linkedin.com/in/nandan-bhole-/)
-* [GitHub](https://github.com/Nandan2701)
+* **LinkedIn:** [linkedin.com/in/nandan-bhole-](https://www.linkedin.com/in/nandan-bhole-/)  
+* **GitHub:** [github.com/Nandan2701](https://github.com/Nandan2701)
