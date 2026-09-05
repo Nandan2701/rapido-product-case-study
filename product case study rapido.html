@@ -2926,13 +2926,23 @@
             color: #047857;
         }
     
-        /* --- RESPONSIVE AUTO-FIT SCALER FOR MOBILE --- */
-        .deck-stage {
+        /* --- RESPONSIVE AUTO-FIT DECK VIEWPORT --- */
+        .deck-viewport {
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            overflow: visible;
+        }
+
+        .deck-stage {
+            width: 1280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             transform-origin: top center;
+            flex-shrink: 0;
         }
 
         @media (max-width: 1300px) {
@@ -2941,21 +2951,26 @@
                 justify-content: flex-start !important;
                 overflow-x: hidden !important;
             }
-            .download-cta-btn {
-                top: 10px !important;
-                right: 12px !important;
-                transform: scale(0.85);
-                transform-origin: top right;
-            }
         }
 
+        @media (max-width: 1024px) {
+            .download-cta-btn {
+                position: relative !important;
+                top: auto !important;
+                right: auto !important;
+                margin-top: 18px !important;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+                z-index: 100 !important;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="deck-stage">
-        <div class="slide-container">
+    <div class="deck-viewport">
+        <div class="deck-stage">
+            <div class="slide-container">
         <!-- Persistent Sidebar -->
         <div class="sidebar">
             <div class="chevron" id="sidebar-chevron">></div>
@@ -4075,20 +4090,21 @@
     </div>
 
     <!-- UI Controls -->
-    <div class="controls">
-        <button id="prev-btn" onclick="prevSlide()" disabled>← Previous</button>
-        <div class="slide-counter" id="counter">1 / 13</div>
-        <button id="next-btn" onclick="nextSlide()">Next Slide →</button>
-    </div>
-    </div> <!-- End of .deck-stage -->
+            <div class="controls">
+                <button id="prev-btn" onclick="prevSlide()" disabled>← Previous</button>
+                <div class="slide-counter" id="counter">1 / 13</div>
+                <button id="next-btn" onclick="nextSlide()">Next Slide →</button>
+            </div>
 
-    <!-- Top-Right Floating Download Button (Option 4: Dual-Tone Badge) -->
-    <a id="download-pdf-btn" href="rapido_case_study.pdf" download="Rapido_Product_Case_Study_Nandan_Bhole.pdf" class="download-cta-btn" title="Download High-Res PDF Case Study">
-        <span class="icon-side">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </span>
-        <span class="text-side">Download Case Study (PDF)</span>
-    </a>
+            <!-- Download Button (Fixed Top-Right on Desktop, Below Controls on Mobile) -->
+            <a id="download-pdf-btn" href="rapido_case_study.pdf" download="Rapido_Product_Case_Study_Nandan_Bhole.pdf" class="download-cta-btn" title="Download High-Res PDF Case Study">
+                <span class="icon-side">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </span>
+                <span class="text-side">Download Case Study (PDF)</span>
+            </a>
+        </div> <!-- End of .deck-stage -->
+    </div> <!-- End of .deck-viewport -->
 
     <script>
         const slideData = [
@@ -4220,28 +4236,31 @@
     
         // --- RESPONSIVE VIEWPORT AUTO-FIT ENGINE ---
         function fitToScreen() {
+            const viewport = document.querySelector('.deck-viewport');
             const stage = document.querySelector('.deck-stage');
-            if (!stage) return;
+            if (!stage || !viewport) return;
+
             const screenW = window.innerWidth;
-            if (screenW < 1300) {
-                const pad = screenW <= 600 ? 12 : 24;
+            if (screenW < 1320) {
+                const pad = screenW <= 600 ? 8 : 24;
                 const scale = Math.min((screenW - pad) / 1280, 1.0);
                 stage.style.transform = `scale(${scale})`;
-                stage.style.transformOrigin = 'top center';
-                const totalHeight = 720 + 80; // slide height + controls height
-                stage.style.height = `${Math.ceil(totalHeight * scale)}px`;
+
+                // Unscaled height is 720px (slide) + 30px (margin) + 50px (controls) + 70px (button space) = 870px
+                const unscaledHeight = 870;
+                viewport.style.height = `${Math.ceil(unscaledHeight * scale)}px`;
             } else {
                 stage.style.transform = 'none';
-                stage.style.height = 'auto';
+                viewport.style.height = 'auto';
             }
         }
 
         window.addEventListener('resize', fitToScreen);
-        window.addEventListener('orientationchange', () => setTimeout(fitToScreen, 80));
+        window.addEventListener('orientationchange', () => setTimeout(fitToScreen, 100));
         window.addEventListener('load', fitToScreen);
         setTimeout(fitToScreen, 50);
 
-        // Optional Passive Touch Swipe for mobile
+        // Passive Touch Gesture Swipe for Mobile
         let touchStartX = 0;
         let touchEndX = 0;
         document.addEventListener('touchstart', (e) => {
@@ -4252,7 +4271,6 @@
             if (touchEndX < touchStartX - 45) nextSlide();
             if (touchEndX > touchStartX + 45) prevSlide();
         }, { passive: true });
-
     </script>
 </body>
 
