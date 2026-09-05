@@ -2434,41 +2434,57 @@
             display: flex;
             gap: 16px;
             align-items: center;
+            justify-content: center;
         }
 
         .download-cta-btn {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            z-index: 1000;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 12px 22px;
-            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
-            color: #F9C935;
-            border: 1.5px solid #F9C935;
+            background: #111827;
+            color: #FFFFFF;
             border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 700;
-            font-size: 14px;
             text-decoration: none;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border: 1px solid #1F2937;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
             transition: all 0.2s ease;
-            margin-left: 12px;
+        }
+
+        .download-cta-btn .icon-side {
+            background: #F9C935;
+            color: #111827;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .download-cta-btn .text-side {
+            padding: 10px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
         }
 
         .download-cta-btn:hover {
-            background: #F9C935;
-            color: #111827;
-            border-color: #111827;
             transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(249, 201, 53, 0.4);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            border-color: #F9C935;
         }
 
-        .download-cta-btn svg {
+        .download-cta-btn .icon-side svg {
             transition: transform 0.2s ease;
         }
 
-        .download-cta-btn:hover svg {
-            transform: translateY(2px);
+        .download-cta-btn:hover .icon-side svg {
+            transform: translateY(1.5px);
         }
 
 
@@ -4039,11 +4055,15 @@
         <button id="prev-btn" onclick="prevSlide()" disabled>← Previous</button>
         <div class="slide-counter" id="counter">1 / 13</div>
         <button id="next-btn" onclick="nextSlide()">Next Slide →</button>
-        <a id="download-pdf-btn" href="rapido_case_study.pdf" download="Rapido_Product_Case_Study_Nandan_Bhole.pdf" class="download-cta-btn" title="Download High-Res PDF Case Study">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Download Case Study (PDF)</span>
-        </a>
     </div>
+
+    <!-- Top-Right Floating Download Button (Option 4: Dual-Tone Badge) -->
+    <a id="download-pdf-btn" href="rapido_case_study.pdf" download="Rapido_Product_Case_Study_Nandan_Bhole.pdf" class="download-cta-btn" title="Download High-Res PDF Case Study">
+        <span class="icon-side">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </span>
+        <span class="text-side">Download Case Study (PDF)</span>
+    </a>
 
     <script>
         const slideData = [

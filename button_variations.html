@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Button - 10 Design Variations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rapido-yellow: #F9C935;
+            --rapido-dark: #111827;
+            --rapido-gray: #1F2937;
+            --bg-page: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: #111827;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px 28px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-num {
+            background: #111827;
+            color: #F9C935;
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .card-desc {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .preview-box {
+            background: #eef1f6;
+            border-radius: 12px;
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 90px;
+            border: 1px dashed #d1d5db;
+        }
+
+        /* ========================================================
+           VARIATION 1: Rapido Electric Yellow (High-Contrast Hero)
+           ======================================================== */
+        .btn-v1 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #F9C935;
+            color: #111827;
+            border: 1.5px solid #111827;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(249, 201, 53, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .btn-v1:hover {
+            background: #111827;
+            color: #F9C935;
+            border-color: #F9C935;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(17, 24, 39, 0.4);
+        }
+
+        /* ========================================================
+           VARIATION 2: Cyber Dark with Glowing Gold Border (Current)
+           ======================================================== */
+        .btn-v2 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            color: #F9C935;
+            border: 1.5px solid #F9C935;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-v2:hover {
+            background: #F9C935;
+            color: #111827;
+            border-color: #111827;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(249, 201, 53, 0.45);
+        }
+
+        /* ========================================================
+           VARIATION 3: Frosted Glassmorphism (Modern Translucent)
+           ======================================================== */
+        .btn-v3 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #FFFFFF;
+            border: 1px solid rgba(249, 201, 53, 0.4);
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .btn-v3 .icon-highlight {
+            color: #F9C935;
+        }
+
+        .btn-v3:hover {
+            background: rgba(17, 24, 39, 1);
+            border-color: #F9C935;
+            box-shadow: 0 8px 24px rgba(249, 201, 53, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ========================================================
+           VARIATION 4: Dual-Tone Badge (Icon Box + Text Pill)
+           ======================================================== */
+        .btn-v4 {
+            display: inline-flex;
+            align-items: center;
+            background: #111827;
+            color: #FFFFFF;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            overflow: hidden;
+            border: 1px solid #1F2937;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .btn-v4 .icon-side {
+            background: #F9C935;
+            color: #111827;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-v4 .text-side {
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .btn-v4:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+            border-color: #F9C935;
+        }
+
+        /* ========================================================
+           VARIATION 5: Minimalist Monochrome with Yellow Dot
+           ======================================================== */
+        .btn-v5 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: #FFFFFF;
+            color: #111827;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+        }
+
+        .btn-v5 .yellow-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #F9C935;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .btn-v5:hover {
+            border-color: #111827;
+            background: #F9FAFB;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+        }
+
+        /* ========================================================
+           VARIATION 6: Pill Capsule with "PDF" Chip Tag
+           ======================================================== */
+        .btn-v6 {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: #111827;
+            color: #FFFFFF;
+            border: 1px solid #374151;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .btn-v6 .chip {
+            background: #F9C935;
+            color: #111827;
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .btn-v6:hover {
+            border-color: #F9C935;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(249, 201, 53, 0.25);
+        }
+
+        /* ========================================================
+           VARIATION 7: Clean White Card with Drop Shadow
+           ======================================================== */
+        .btn-v7 {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #FFFFFF;
+            color: #111827;
+            border: 1px solid #D1D5DB;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+        }
+
+        .btn-v7 svg {
+            color: #111827;
+        }
+
+        .btn-v7:hover {
+            background: #111827;
+            color: #FFFFFF;
+            border-color: #111827;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(17, 24, 39, 0.25);
+        }
+
+        .btn-v7:hover svg {
+            color: #F9C935;
+        }
+
+        /* ========================================================
+           VARIATION 8: Neon Bottom Accent Line
+           ======================================================== */
+        .btn-v8 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px 8px 20px;
+            background: #111827;
+            color: #FFFFFF;
+            border: 1px solid #1F2937;
+            border-bottom: 3px solid #F9C935;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .btn-v8:hover {
+            background: #1F2937;
+            border-bottom-color: #FFE066;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(249, 201, 53, 0.3);
+        }
+
+        /* ========================================================
+           VARIATION 9: Luxury Gold Gradient (Deep Premium)
+           ======================================================== */
+        .btn-v9 {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #F9C935 0%, #E5A812 100%);
+            color: #111827;
+            border: 1px solid #D99B08;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(229, 168, 18, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .btn-v9:hover {
+            background: linear-gradient(135deg, #FFD54F 0%, #F9C935 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(249, 201, 53, 0.5);
+        }
+
+        /* ========================================================
+           VARIATION 10: Smooth Animated Arrow Slide-Down
+           ======================================================== */
+        .btn-v10 {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 22px;
+            background: #111827;
+            color: #F9C935;
+            border: 1.5px solid transparent;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-v10 svg {
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-v10:hover {
+            background: #000000;
+            border-color: #F9C935;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn-v10:hover svg {
+            transform: translateY(3px) scale(1.15);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Download Button — 10 Visual Variations</h1>
+        <p>Hover over each button to test its interactive animation. Pick your favorite option number (#1 to #10).</p>
+    </div>
+
+    <div class="grid">
+
+        <!-- Card 1 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Option 1: Rapido Electric Yellow</div>
+                    <div class="card-desc">High-contrast solid yellow background with dark text</div>
+                </div>
+                <span class="badge-num">#1</span>
+            </div>
+            <div class="preview-box">
+                <a href="#" class="btn-v1">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Case Study (PDF)</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Option 2: Cyber Slate & Gold Border</div>
+                    <div class="card-desc">Dark slate gradient with glowing yellow border & hover invert</div>
+                </div>
+                <span class="badge-num">#2</span>
+            </div>
+            <div class="preview-box">
+                <a href="#" class="btn-v2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Case Study (PDF)</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Option 3: Frosted Glass Capsule</div>
+                    <div class="card-desc">Translucent backdrop-blur dark pill with gold icon accent</div>
+                </div>
+                <span class="badge-num">#3</span>
+            </div>
+            <div class="preview-box">
+                <a href="#" class="btn-v3">
+                    <svg class="icon-highlight" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Case Study (PDF)</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Option 4: Dual-Tone Icon Block</div>
+                    <div class="card-desc">Yellow icon box on left + dark slate label on right</div>
+                </div>
+                <span class="badge-num">#4</span>
+            </div>
+            <div class="preview-box">
+                <a href="#" class="btn-v4">
+                    <span class="icon-side">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    </span>
+                    <span class="text-side">Download Case Study (PDF)</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Option 5: Minimal White with Live Yellow Dot</div>
+                    <div class="card-desc">Clean white minimalist button with status dot</div>
+                </div>
+                <span class="badge-num">#5</span>
+            </div>
+            <div class="preview-box">
+                <a href="#" class="btn-v5">
+                    <span class="yellow-dot"></span>
+                    <span>Download Case Study (PDF)</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Option 6: Dark Pill with Yellow [PDF] Chip</div>
+                    <div class="card-desc">Modern tech pill badge with integrated yellow micro-tag</div>
+                </div>
+                <span class="badge-num">#6</span>
+            </div>
+            <div class="preview-box">
+                <a href="#" class="btn-v6">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F9C935" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Case Study</span>
+                    <span class="chip">PDF</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Option 7: Clean Elevated Card</div>
+                    <div class="card-desc">Subtle gray border, deep shadow, inverts to dark on hover</div>
+                </div>
+                <span class="badge-num">#7</span>
+            </div>
+            <div class="preview-box">
+                <a href="#" class="btn-v7">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Case Study (PDF)</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Option 8: Neon Underline Accent</div>
+                    <div class="card-desc">Solid dark button with 3px vibrant Rapido yellow bottom bar</div>
+                </div>
+                <span class="badge-num">#8</span>
+            </div>
+            <div class="preview-box">
+                <a href="#" class="btn-v8">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F9C935" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Case Study (PDF)</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 9 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Option 9: Luxury Amber Gradient</div>
+                    <div class="card-desc">Rich metallic gold-yellow gradient with dark typography</div>
+                </div>
+                <span class="badge-num">#9</span>
+            </div>
+            <div class="preview-box">
+                <a href="#" class="btn-v9">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Case Study (PDF)</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Card 10 -->
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">Option 10: Interactive Arrow Spring Animation</div>
+                    <div class="card-desc">Deep black pill where the download arrow springs downward on hover</div>
+                </div>
+                <span class="badge-num">#10</span>
+            </div>
+            <div class="preview-box">
+                <a href="#" class="btn-v10">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Download Case Study (PDF)</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
