@@ -2926,12 +2926,37 @@
             border-left-color: #10B981;
             color: #047857;
         }
+    
+        /* --- RESPONSIVE AUTO-FIT SCALER FOR MOBILE --- */
+        .deck-stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform-origin: top center;
+        }
+
+        @media (max-width: 1300px) {
+            body {
+                padding: 12px 0 !important;
+                justify-content: flex-start !important;
+                overflow-x: hidden !important;
+            }
+            .download-cta-btn {
+                top: 10px !important;
+                right: 12px !important;
+                transform: scale(0.85);
+                transform-origin: top right;
+            }
+        }
+
     </style>
 </head>
 
 <body>
 
-    <div class="slide-container">
+    <div class="deck-stage">
+        <div class="slide-container">
         <!-- Persistent Sidebar -->
         <div class="sidebar">
             <div class="chevron" id="sidebar-chevron">></div>
@@ -4056,6 +4081,7 @@
         <div class="slide-counter" id="counter">1 / 13</div>
         <button id="next-btn" onclick="nextSlide()">Next Slide →</button>
     </div>
+    </div> <!-- End of .deck-stage -->
 
     <!-- Top-Right Floating Download Button (Option 4: Dual-Tone Badge) -->
     <a id="download-pdf-btn" href="rapido_case_study.pdf" download="Rapido_Product_Case_Study_Nandan_Bhole.pdf" class="download-cta-btn" title="Download High-Res PDF Case Study">
@@ -4192,6 +4218,42 @@
 
         // Initialize
         updateUI();
+    
+        // --- RESPONSIVE VIEWPORT AUTO-FIT ENGINE ---
+        function fitToScreen() {
+            const stage = document.querySelector('.deck-stage');
+            if (!stage) return;
+            const screenW = window.innerWidth;
+            if (screenW < 1300) {
+                const pad = screenW <= 600 ? 12 : 24;
+                const scale = Math.min((screenW - pad) / 1280, 1.0);
+                stage.style.transform = `scale(${scale})`;
+                stage.style.transformOrigin = 'top center';
+                const totalHeight = 720 + 80; // slide height + controls height
+                stage.style.height = `${Math.ceil(totalHeight * scale)}px`;
+            } else {
+                stage.style.transform = 'none';
+                stage.style.height = 'auto';
+            }
+        }
+
+        window.addEventListener('resize', fitToScreen);
+        window.addEventListener('orientationchange', () => setTimeout(fitToScreen, 80));
+        window.addEventListener('load', fitToScreen);
+        setTimeout(fitToScreen, 50);
+
+        // Optional Passive Touch Swipe for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 45) nextSlide();
+            if (touchEndX > touchStartX + 45) prevSlide();
+        }, { passive: true });
+
     </script>
 </body>
 
